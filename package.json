@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "repository": "lukeed/suave",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build",
+    "pretest": "tsc --noEmit",
+    "test": "uvu -r ts-node/register packages __tests__ -i fixtures"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "devDependencies": {
+    "ts-node": "9.0.0",
+    "typescript": "4.0.2",
+    "uvu": "0.3.3"
+  }
+}

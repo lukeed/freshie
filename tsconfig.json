@@ -1,0 +1,29 @@
+{
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "sourceMap": true
+    }
+  },
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "removeComments": true,
+    "sourceMap": false,
+    "allowJs": true,
+    "noEmit": true
+  },
+  "include": [
+    "packages",
+    "examples"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "version": "0.0.0",
+  "name": "@suave/vue",
+  "peerDependencies": {
+    "suave": "*",
+    "vue": "^2.6.0"
+  }
+}

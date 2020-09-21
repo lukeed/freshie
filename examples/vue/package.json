@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "suave build"
+  },
+  "dependencies": {
+    "vue": "2.6.12"
+  },
+  "devDependencies": {
+    "@suave/vue": "workspace:*",
+    "rollup-plugin-vue": "5.1.9",
+    "suave": "workspace:*",
+    "vue-template-compiler": "2.6.12"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "suave build"
+  },
+  "dependencies": {
+    "preact": "10.4.8"
+  },
+  "devDependencies": {
+    "@babel/core": "7.11.6",
+    "@babel/preset-env": "7.11.5",
+    "@babel/plugin-transform-react-jsx": "7.10.4",
+    "@suave/preact": "workspace:*",
+    "@rollup/plugin-babel": "5.2.1",
+    "suave": "workspace:*"
+  }
+}
