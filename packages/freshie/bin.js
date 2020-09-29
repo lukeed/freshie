@@ -3,7 +3,7 @@ const sade = require('sade');
 const commands = require('./build');
 const { version } = require('./package');
 
-sade('suave')
+sade('freshie')
 	.version(version)
 	.option('-C, --cwd', 'The relative working directory', '.')
 

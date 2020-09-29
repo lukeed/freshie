@@ -27,8 +27,8 @@ const typescript = {
 
 // ---
 
-build('suave', {
-	input: 'packages/suave/src/index.ts',
+build('freshie', {
+	input: 'packages/freshie/src/index.ts',
 	interop: false,
 	format: {
 		cjs: 'build/index.js'

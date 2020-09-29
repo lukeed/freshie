@@ -1,8 +1,8 @@
 {
   "version": "0.0.0",
-  "name": "@suave/preact",
+  "name": "@freshie/preact",
   "peerDependencies": {
-    "suave": "*",
+    "freshie": "*",
     "preact": "^10.0.0"
   }
 }

@@ -1,10 +1,10 @@
 {
-  "name": "suave",
+  "name": "freshie",
   "version": "0.0.0",
-  "repository": "lukeed/suave",
+  "repository": "lukeed/freshie",
   "license": "MIT",
   "bin": {
-    "suave": "bin.js"
+    "freshie": "bin.js"
   },
   "exports": {
     "./package.json": "./package.json",

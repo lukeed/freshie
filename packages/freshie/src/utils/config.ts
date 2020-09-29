@@ -78,14 +78,14 @@ export function load(argv: Argv.Options): Config.Rollup {
 	const { cwd, dest, src, minify, isProd } = argv;
 
 	const pkg = utils.load<TODO>('package.json', cwd);
-	const file = utils.load<TODO>('suave.config.js', cwd);
+	const file = utils.load<TODO>('freshie.config.js', cwd);
 
 	// planning to mutate
 	const options = klona(defaults);
 	const customize: Customizer[] = [];
 
 	if (pkg) {
-		let tmp, rgx = /^@suave\//i;
+		let tmp, rgx = /^@freshie\//i;
 		Object.keys(pkg.devDependencies || {}).forEach(name => {
 			if (!rgx.test(name)) return;
 			console.log(`Applying ${name}`); // TODO: {type}

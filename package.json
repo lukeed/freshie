@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "0.0.0",
-  "repository": "lukeed/suave",
+  "repository": "lukeed/freshie",
   "license": "MIT",
   "scripts": {
     "build": "node build",

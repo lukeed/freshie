@@ -1,4 +1,4 @@
-import Router from 'suave/router';
+import Router from 'freshie/router';
 
 export var router;
 var target, render, hydrate;

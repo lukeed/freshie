@@ -1,7 +1,7 @@
-import * as suave from 'suave/runtime';
-import * as svelte from '@suave/svelte';
+import * as freshie from 'freshie/runtime';
+import * as svelte from '@freshie/svelte';
 
-suave.start({
+freshie.start({
 	base: '/',
 	target: document.body,
 	hydrate: svelte.hydrate,

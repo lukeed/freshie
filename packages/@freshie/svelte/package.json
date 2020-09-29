@@ -1,8 +1,8 @@
 {
   "version": "0.0.0",
-  "name": "@suave/svelte",
+  "name": "@freshie/svelte",
   "peerDependencies": {
-    "suave": "*",
+    "freshie": "*",
     "svelte": "^3.25.0"
   }
 }

@@ -41,9 +41,9 @@ export default async function (src: Nullable<string>, opts: Partial<Argv.Options
 	// TODO: isDOM
 	const isDOM = true;
 	config.plugins.push({
-		name: 'suave/runtime',
-		resolveId: (id) => id === 'suave/runtime' ? id : null,
-		load: async (id) => id === 'suave/runtime' ? await xform(routes, isDOM) : null,
+		name: 'freshie/runtime',
+		resolveId: (id) => id === 'freshie/runtime' ? id : null,
+		load: async (id) => id === 'freshie/runtime' ? await xform(routes, isDOM) : null,
 	});
 
 	const start = Date.now();
