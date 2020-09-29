@@ -1,5 +1,5 @@
 import * as freshie from 'freshie/runtime';
-import * as svelte from '@freshie/preact';
+import * as svelte from '@freshie/ui.preact';
 
 freshie.start({
 	base: '/',

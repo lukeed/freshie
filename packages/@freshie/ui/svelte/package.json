@@ -1,8 +1,8 @@
 {
   "version": "0.0.0",
-  "name": "@freshie/svelte",
+  "name": "@freshie/ui.svelte",
   "peerDependencies": {
-    "freshie": "*",
+    "freshie": "workspace:*",
     "svelte": "^3.25.0"
   }
 }

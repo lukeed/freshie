@@ -1,5 +1,5 @@
 import * as freshie from 'freshie/runtime';
-import * as vue from '@freshie/vue';
+import * as vue from '@freshie/ui.vue';
 
 freshie.start({
 	base: '/',
