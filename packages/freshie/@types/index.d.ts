@@ -76,6 +76,15 @@ declare namespace Config {
 	}
 }
 
+declare namespace Build {
+	interface Route {
+		file: string;
+		pattern: string;
+		layout: Nullable<string>;
+		wild: Nullable<string>;
+	}
+}
+
 declare namespace Runtime {
 	type Params = Dict<string>;
 

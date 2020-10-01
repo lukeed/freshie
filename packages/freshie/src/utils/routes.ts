@@ -4,13 +4,6 @@ import { totalist } from 'totalist';
 import escalade from 'escalade';
 import rsort from 'route-sort';
 
-interface RouteInfo {
-	file: string;
-	pattern: string;
-	layout: Nullable<string>;
-	wild: Nullable<string>;
-}
-
 // 0=static, 1=param, 2=wild
 export const enum Pattern {
 	Static,
@@ -58,14 +51,14 @@ export function to_pattern(rel: string) {
  * @param src The "/src" directory path
  * @param rDir The "routes" directory name
  */
-export async function collect(src: string, rDir: string): Promise<RouteInfo[]> {
+export async function collect(src: string, rDir: string): Promise<Build.Route[]> {
 	const routes = join(src, rDir);
 	if (!existsSync(routes)) return [];
 
 	const LAYOUT = /^_layout/;
 	// TODO: configure extension
 	const EXTN = /\.([tj]sx?|svelte|vue)$/;
-	const PAGES = new Map<string, RouteInfo>();
+	const PAGES = new Map<string, Build.Route>();
 
 	const isLayout = (str: string) => LAYOUT.test(str) && EXTN.test(str);
 
@@ -73,7 +66,7 @@ export async function collect(src: string, rDir: string): Promise<RouteInfo[]> {
 		if (/^[._]/.test(base) || !EXTN.test(base)) return;
 		const rel = relative(routes, absolute);
 
-		const info: RouteInfo = {
+		const info: Build.Route = {
 			...to_pattern(rel),
 			file: absolute,
 			layout: null
