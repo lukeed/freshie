@@ -8,11 +8,12 @@ import * as utils from '../utils/index';
 import * as argv from '../utils/argv';
 // import * as log from '../log';
 
-const INTERNAL = join(__dirname, '..', 'internal');
+const RUNTIME = join(__dirname, '..', 'runtime');
 
 async function xform(routes: TODO, isDOM: boolean): Promise<string> {
-	const entry = join(INTERNAL, 'index.js');
+	const entry = join(RUNTIME, isDOM ? 'dom.js' : 'ssr.js');
 	const fdata = await utils.read(entry, 'utf8');
+
 	// TODO: layout files
 	return fdata.replace(
 		'/* <ROUTES> */',

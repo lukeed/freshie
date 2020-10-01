@@ -8,6 +8,7 @@
   },
   "exports": {
     "./package.json": "./package.json",
+    "./runtime": "./runtime",
     "./router": {
       "import": "./router/index.mjs",
       "require": "./router/index.js"
@@ -16,7 +17,7 @@
   "files": [
     "*.js",
     "build",
-    "internal",
+    "runtime",
     "router"
   ],
   "dependencies": {
