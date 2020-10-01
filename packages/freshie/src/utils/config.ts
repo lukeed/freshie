@@ -1,5 +1,6 @@
 import { klona } from 'klona';
 import { join, resolve } from 'path';
+import * as scoped from './scoped';
 import * as utils from './index';
 
 export const defaults: Config.Options = {
@@ -77,25 +78,20 @@ type Customizer = (config: Config.Rollup, val: TODO, options: Config.Options) =>
 export function load(argv: Argv.Options): Config.Rollup {
 	const { cwd, dest, src, minify, isProd } = argv;
 
-	const pkg = utils.load<TODO>('package.json', cwd);
 	const file = utils.load<TODO>('freshie.config.js', cwd);
 
 	// planning to mutate
 	const options = klona(defaults);
 	const customize: Customizer[] = [];
 
-	if (pkg) {
-		let tmp, rgx = /^@freshie\//i;
-		Object.keys(pkg.devDependencies || {}).forEach(name => {
-			if (!rgx.test(name)) return;
-			console.log(`Applying ${name}`); // TODO: {type}
-
-			// allow throws – missing package and/or malformed
-			tmp = require(utils.from(cwd, join(name, 'config.js')));
-			if (tmp.rollup) customize.push(tmp.rollup);
-			merge(options, tmp, {}); // TODO
-		});
-	}
+	// auto-load @freshie packages
+	scoped.list(cwd).forEach(name => {
+		console.log(`Applying ${name}`);
+		let file = utils.from(cwd, join(name, 'config.js'));
+		let tmp = require(file); // allow potential throw
+		if (tmp.rollup) customize.push(tmp.rollup);
+		merge(options, tmp, {}); // TODO
+	});
 
 	if (file) {
 		console.log('loading custom config');
