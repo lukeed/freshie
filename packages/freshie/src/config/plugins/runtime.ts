@@ -27,6 +27,6 @@ export function Runtime(routes: Build.Route[], isDOM: boolean): Rollup.Plugin {
 	return {
 		name: 'freshie/runtime',
 		resolveId: (id) => id === 'freshie/runtime' ? id : null,
-		load: (id) => id === 'freshie/runtime' ? xform(routes, isDOM) : null
+		load: (id) => id === 'freshie/runtime' ? xform(routes, isDOM) : null,
 	};
 }

@@ -100,16 +100,10 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 		plugins: [
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
-			require('@rollup/plugin-node-resolve').default({
-				...options.resolve,
-				rootDir: src,
-			}),
-			require('@rollup/plugin-commonjs')(options.commonjs),
 			require('@rollup/plugin-replace')(options.replace),
-			require('@rollup/plugin-json')({
-				compact: isProd,
-				...options.json
-			}),
+			require('@rollup/plugin-node-resolve').default({ ...options.resolve, rootDir: src }),
+			require('@rollup/plugin-json')({ compact: isProd, ...options.json }),
+			require('@rollup/plugin-commonjs')(options.commonjs),
 			minify && require('rollup-plugin-terser').terser(options.terser)
 		]
 	};
@@ -124,8 +118,8 @@ export function Server(argv: Argv.Options, options: Config.Options, context: Con
 		input: join(src, 'index.js'), // TODO: DEPLOY ENTRY
 		output: {
 			file: join(dest, 'index.js'),
+			minifyInternalExports: isProd,
 			sourcemap: !isProd,
-			minifyInternalExports: isProd
 		},
 		treeshake: {
 			propertyReadSideEffects: false,
@@ -135,16 +129,9 @@ export function Server(argv: Argv.Options, options: Config.Options, context: Con
 		plugins: [
 			// require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
-			require('@rollup/plugin-node-resolve').default({
-				...options.resolve,
-				rootDir: src,
-			}),
-			// require('@rollup/plugin-commonjs')(options.commonjs),
 			require('@rollup/plugin-replace')(options.replace),
-			require('@rollup/plugin-json')({
-				compact: isProd,
-				...options.json
-			}),
+			require('@rollup/plugin-node-resolve').default({ ...options.resolve, rootDir: src }),
+			require('@rollup/plugin-json')({ compact: isProd, ...options.json }),
 			minify && require('rollup-plugin-terser').terser(options.terser)
 		]
 	};
