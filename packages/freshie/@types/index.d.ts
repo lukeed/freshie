@@ -1,5 +1,6 @@
 type Nullable<T> = T | null;
 type Arrayable<T> = T[] | T;
+type Promisable<T> = Promise<T> | T;
 
 type Dict<T> = Record<string, T>;
 type Subset<T, V=any> = T & Dict<V>;
@@ -38,6 +39,13 @@ declare namespace Config {
 			}, string>;
 		}>;
 
+		ssr: {
+			type: 'worker' | 'lambda' | 'node';
+			// render<T>(): Promisable<T>;
+			render: string; // path to renderer
+			bucket?: string;
+		};
+
 		routes: {
 			dir: string;
 			test: RegExp;
@@ -73,6 +81,18 @@ declare namespace Config {
 			compress: boolean;
 			output: Dict<any>;
 		}>;
+	}
+
+	interface Context {
+		ssr: boolean;
+		isProd: boolean;
+	}
+
+	namespace Customize {
+		type Rollup = (config: Config.Rollup, options: Config.Options, context: Config.Context) => void;
+		type Options = {
+			[K in keyof Config.Options]: (options: Config.Options[K], context: Config.Context) => void;
+		};
 	}
 }
 

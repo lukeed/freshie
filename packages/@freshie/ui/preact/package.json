@@ -1,6 +1,9 @@
 {
   "version": "0.0.0",
   "name": "@freshie/ui.preact",
+  "dependencies": {
+    "preact-render-to-string": "^5.1.10"
+  },
   "peerDependencies": {
     "freshie": "workspace:*",
     "preact": "^10.0.0"
