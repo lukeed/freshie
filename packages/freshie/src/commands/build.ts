@@ -7,6 +7,14 @@ import { normalize } from '../utils/argv';
 import * as utils from '../utils/index';
 // import * as log from '../log';
 
+import { Runtime } from '../config/plugins/runtime';
+
+async function bundle(rollup: typeof import('rollup').rollup, config: Rollup.Config) {
+	const bun = await rollup(config);
+	// TODO: generate dom + ssr at same time?
+	await Promise.all([].concat(config.output).map(bun.write));
+}
+
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
 	normalize(src, argv, { isProd: true });
 
@@ -24,14 +32,12 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 
 	const { rollup } = require('rollup');
 
-	// TODO: isDOM
-	// const isDOM = true;
-	// config.plugins.push();
+	// TODO: add Runtime inside Config?
+	config.client.plugins.push(
+		Runtime(routes, true)
+	);
 
 	const start = Date.now();
-	await rollup(config).then((bun: Rollup.Bundle) => {
-		return bun.write(config.output);
-	});
-
+	await bundle(rollup, config.client);
 	console.log(`~> (${Date.now() - start}ms)`);
 }

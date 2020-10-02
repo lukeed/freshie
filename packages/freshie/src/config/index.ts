@@ -3,8 +3,9 @@ import { join, resolve } from 'path';
 import * as scoped from '../utils/scoped';
 import * as utils from '../utils/index';
 import { defaults } from './options';
+import * as Plugin from './plugins';
 
-import { Runtime } from './plugins/runtime';
+// import { Runtime } from './plugins/runtime';
 
 // modified pwa/core util
 export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config.Customize.Options, context: Config.Context) {
@@ -98,6 +99,7 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 			tryCatchDeoptimization: false
 		},
 		plugins: [
+			Plugin.Router,
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')(options.replace),
