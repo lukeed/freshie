@@ -10,17 +10,24 @@ import * as utils from '../utils/index';
 
 const RUNTIME = join(__dirname, '..', 'runtime');
 
-async function xform(routes: TODO, isDOM: boolean): Promise<string> {
+async function xform(routes: Build.Route[], isDOM: boolean): Promise<string> {
 	const entry = join(RUNTIME, isDOM ? 'dom.js' : 'ssr.js');
 	const fdata = await utils.read(entry, 'utf8');
 
 	// TODO: layout files
-	return fdata.replace(
-		'/* <ROUTES> */',
-		routes.map((obj: TODO) => {
-			return `define('${obj.pattern}', () => import('${obj.file}'));`
-		}).join('\n\t')
-	);
+	let imports='', defines='';
+	routes.forEach(tmp => {
+		if (defines) defines += '\n\t';
+		if (isDOM) {
+			defines += `define('${tmp.pattern}', () => import('${tmp.file}'));`;
+		} else {
+			imports += `import * as ${tmp.name/*TODO*/} from '${tmp.file}';\n`;
+			defines += `define('${tmp.pattern}', ${tmp.name/*TODO*/});`
+		}
+	});
+
+	if (imports) imports += '\n';
+	return imports + fdata.replace('/* <ROUTES> */', defines);
 }
 
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
@@ -43,7 +50,7 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 	config.plugins.push({
 		name: 'freshie/runtime',
 		resolveId: (id) => id === 'freshie/runtime' ? id : null,
-		load: async (id) => id === 'freshie/runtime' ? await xform(routes, isDOM) : null,
+		load: (id) => id === 'freshie/runtime' ? xform(routes, isDOM) : null
 	});
 
 	const start = Date.now();
