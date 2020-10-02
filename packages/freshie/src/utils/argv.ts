@@ -1,15 +1,13 @@
 import { join, resolve } from 'path';
-import * as config from './config';
-import * as utils from './index';
+import { isDir } from './index';
 
-export function normalize(src: Nullable<string>, opts: Partial<Argv.Options>) {
-	const cwd = opts.cwd = resolve(opts.cwd || '.');
+export function normalize(src: Nullable<string>, argv: Partial<Argv.Options>, extra: Partial<Argv.Options> = {}) {
+	Object.assign(argv, extra);
+	const cwd = argv.cwd = resolve(argv.cwd || '.');
 
-	opts.dest = join(cwd, opts.destDir = 'build');
-	opts.src = join(cwd, opts.srcDir = src || 'src');
+	argv.dest = join(cwd, argv.destDir = 'build');
+	argv.src = join(cwd, argv.srcDir = src || 'src');
 
 	// use root if "/src" does not exist
-	opts.src = utils.isDir(opts.src) ? opts.src : cwd;
-
-	return config.load(opts as Argv.Options);
+	argv.src = isDir(argv.src) ? argv.src : cwd;
 }

@@ -4,8 +4,8 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import { premove } from 'premove';
 // import * as defaults from '../config';
+import { normalize } from '../utils/argv';
 import * as utils from '../utils/index';
-import * as argv from '../utils/argv';
 // import * as log from '../log';
 
 const RUNTIME = join(__dirname, '..', 'runtime');
@@ -23,18 +23,17 @@ async function xform(routes: TODO, isDOM: boolean): Promise<string> {
 	);
 }
 
-export default async function (src: Nullable<string>, opts: Partial<Argv.Options>) {
-	opts.isProd = true;
-	const config = argv.normalize(src, opts);
+export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
+	normalize(src, argv, { isProd: true });
 
-	const routes = await utils.routes(opts.src, 'routes'); // TODO: options.routes object
+	const routes = await utils.routes(argv.src, 'routes'); // TODO: options.routes object
 	if (!routes.length) return console.log('No routes found!');
 
 	console.log('ROUTES', routes);
 
-	if (existsSync(opts.dest)) {
-		console.warn(`Removing "${opts.destDir}" directory`);
-		await premove(opts.dest);
+	if (existsSync(argv.dest)) {
+		console.warn(`Removing "${argv.destDir}" directory`);
+		await premove(argv.dest);
 	}
 
 	const { rollup } = require('rollup');
