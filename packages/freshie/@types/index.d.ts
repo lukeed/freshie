@@ -41,8 +41,9 @@ declare namespace Config {
 
 		ssr: {
 			type: 'worker' | 'lambda' | 'node';
-			// render<T>(): Promisable<T>;
+			entry: string; // path to entry
 			render: string; // path to renderer
+			// render<T>(): Promisable<T>;
 			bucket?: string;
 		};
 

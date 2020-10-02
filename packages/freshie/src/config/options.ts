@@ -14,6 +14,7 @@ export const defaults: Config.Options = {
 
 	ssr: {
 		type: null,
+		entry: null,
 		render: null,
 	},
 
