@@ -31,6 +31,7 @@ export const defaults: Config.Options = {
 		// updated
 		'__DEV__': 'true',
 		'__BROWSER__': 'true',
+		'process.browser': 'true',
 		'process.env.NODE_ENV': 'development',
 	},
 

@@ -83,6 +83,8 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
+	options.replace['__BROWSER__'] = options.replace['process.browser'] = 'true';
+
 	return {
 		input: join(src, 'index.js'),
 		output: {
@@ -115,6 +117,8 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 export function Server(argv: Argv.Options, options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
+
+	options.replace['__BROWSER__'] = options.replace['process.browser'] = 'false';
 
 	return {
 		input: join(src, 'index.js'), // TODO: DEPLOY ENTRY

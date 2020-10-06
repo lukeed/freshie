@@ -59,6 +59,7 @@ declare namespace Config {
 		replace: Subset<{
 			'__DEV__': string;
 			'__BROWSER__': string;
+			'process.browser': string;
 			'process.env.NODE_ENV': string;
 		}, string>;
 
