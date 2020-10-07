@@ -1,5 +1,3 @@
-declare class Router {
-	//
+declare module 'freshie/router' {
+	export * from 'navaid';
 }
-
-export default Router;

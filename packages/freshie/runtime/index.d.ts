@@ -1,4 +1,4 @@
-import type Router from '../router';
+import type { Router } from 'freshie/router';
 
 export const router: Router;
 
