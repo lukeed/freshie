@@ -13,6 +13,7 @@ declare namespace Argv {
 	interface Options {
 		cwd: string;
 		minify: boolean;
+		ssr: boolean;
 		//
 		src: string;
 		dest: string;
