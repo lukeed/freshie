@@ -61,14 +61,15 @@ export function load(argv: Argv.Options): {
 
 	const client = Client(argv, options, context);
 
-	// TODO: if has `ssr.type` value, build server config
-	// const toServer = !!options.ssr.type || !isProd;
 	let server: Nullable<Rollup.Config>;
-	if (options.ssr.type) {
-		server = Server(argv, options, context);
-	} else if (!isProd) {
-		// default file server (node)
-		server = Server(argv, options, context);
+
+	// TODO: Force local node SSR server for dev
+	if (argv.ssr && !isProd) {
+		console.log('TODO: force local ssr node server')
+	} else if (argv.ssr) {
+		console.log('TODO: load `options.ssr` values')
+	} else {
+		// --no-ssr
 	}
 
 	customize.forEach(mutate => {
