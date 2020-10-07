@@ -64,17 +64,9 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 
 	let server: Nullable<Rollup.Config>;
 
-	// TODO: Force local node SSR server for dev
+	// force node for dev
 	if (argv.ssr && !isProd) {
-		// if was "node" & entry exists, respect it
-		// force "node" for devserver
-		if (options.ssr.type !== 'node') {
-			// TODO: set default entry
-			options.ssr.type = 'node';
-		} else if (false) {
-			// TODO: was node & entry exists, respect it
-		}
-		console.log('TODO: force local ssr node server')
+		options.ssr.type = 'node';
 	} else if (argv.ssr && !options.ssr.type) {
 		// TODO: "cannot create SSR bundle without..."
 		throw new Error('Missing `options.ssr.type` value!');
@@ -84,6 +76,25 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	} else {
 		// --no-ssr
 	}
+
+	// auto-detect entries; set SSR entry
+	await utils.list(src).then(files => {
+		let ssr = '';
+
+		files.forEach(rel => {
+			if (/index\.(dom\.)?[tjm]sx?/.test(rel)) {
+				client.input = join(src, rel);
+			} else if (server) {
+				ssr = ssr || (/index\.ssr\.[tjm]sx?/.test(rel) && rel);
+			}
+		});
+
+		if (server && ssr) {
+			server.input = join(src, ssr);
+		} else if (server) {
+			server.input = options.ssr.entry;
+		}
+	});
 
 	customize.forEach(mutate => {
 		mutate(client, options, context);

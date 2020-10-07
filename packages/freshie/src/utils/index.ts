@@ -5,6 +5,7 @@ import { promisify } from 'util';
 
 export const write = promisify(fs.writeFile);
 export const read = promisify(fs.readFile);
+export const list = promisify(fs.readdir);
 
 export { collect as routes } from './routes';
 
