@@ -1,9 +1,9 @@
-exports.rollup = function (config) {
+exports.rollup = function (config, options, context) {
 	config.plugins.push(
 		// @ts-ignore
 		require('rollup-plugin-svelte')({
 			hydratable: true,
-			generate: 'dom',
+			generate: context.ssr ? 'ssr' : 'dom',
 			css: false,
 		})
 	)

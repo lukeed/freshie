@@ -1,11 +1,10 @@
 import { join } from 'path';
 import * as utils from '../../utils';
 
-const RUNTIME = join(__dirname, '..', 'runtime');
+const RUNTIME = join(__dirname, '..', 'runtime', 'index.dom.js');
 
-async function xform(routes: Build.Route[], isDOM: boolean): Promise<string> {
-	const entry = join(RUNTIME, isDOM ? 'dom.js' : 'ssr.js');
-	const fdata = await utils.read(entry, 'utf8');
+async function xform(file: string, routes: Build.Route[], isDOM: boolean): Promise<string> {
+	let fdata = await utils.read(file, 'utf8');
 
 	// TODO: layout files
 	let imports='', defines='';
@@ -24,9 +23,19 @@ async function xform(routes: Build.Route[], isDOM: boolean): Promise<string> {
 }
 
 export function Runtime(routes: Build.Route[], isDOM: boolean): Rollup.Plugin {
-	return {
+	const ident = 'freshie/runtime';
+
+	const Plugin: Rollup.Plugin = {
 		name: 'freshie/runtime',
-		resolveId: (id) => id === 'freshie/runtime' ? id : null,
-		load: (id) => id === 'freshie/runtime' ? xform(routes, isDOM) : null,
+		load: id => {
+			if (id === ident) return xform(RUNTIME, routes, isDOM);
+			if (/[\\\/]+@freshie\/ssr/.test(id)) return xform(id, routes, isDOM);
+		}
 	};
+
+	if (isDOM) {
+		Plugin.resolveId = id => id === ident ? id : null;
+	}
+
+	return Plugin;
 }

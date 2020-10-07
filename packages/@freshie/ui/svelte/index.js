@@ -8,3 +8,11 @@ export function render(Tag, props, target) {
 export function hydrate(Tag, props, target) {
 	App = new Tag({ props, target, hydrate: true });
 }
+
+// ---
+
+export function ssr(Tag, props={}) {
+	let { head='', html='', css } = Tag.render(props);
+	if (css && css.code) head += `<style>${css.code}</style>`;
+	return { head, body: html };
+}

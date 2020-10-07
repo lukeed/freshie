@@ -66,9 +66,21 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 
 	// TODO: Force local node SSR server for dev
 	if (argv.ssr && !isProd) {
+		// if was "node" & entry exists, respect it
+		// force "node" for devserver
+		if (options.ssr.type !== 'node') {
+			// TODO: set default entry
+			options.ssr.type = 'node';
+		} else if (false) {
+			// TODO: was node & entry exists, respect it
+		}
 		console.log('TODO: force local ssr node server')
+	} else if (argv.ssr && !options.ssr.type) {
+		// TODO: "cannot create SSR bundle without..."
+		throw new Error('Missing `options.ssr.type` value!');
 	} else if (argv.ssr) {
-		console.log('TODO: load `options.ssr` values')
+		// console.log('TODO: load `options.ssr` values')
+		server = Server(argv, routes, options, context);
 	} else {
 		// --no-ssr
 	}
@@ -86,7 +98,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 	const { isProd } = context;
 
 	return {
-		input: join(src, 'index.js'),
+		input: join(src, 'index.dom.js'),
 		output: {
 			sourcemap: !isProd,
 			dir: join(dest, 'client'),
@@ -124,13 +136,13 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 	};
 }
 
-// TODO: Server runs _after_ Client
 export function Server(argv: Argv.Options, routes: Build.Route[], options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
 	return {
-		input: join(src, 'index.js'), // TODO: DEPLOY ENTRY
+		// TODO: set via options.ssr.entry
+		input: join(src, 'index.ssr.js'),
 		output: {
 			file: join(dest, 'server', 'index.js'),
 			minifyInternalExports: isProd,

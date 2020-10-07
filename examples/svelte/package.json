@@ -4,6 +4,7 @@
     "build": "freshie build"
   },
   "devDependencies": {
+    "@freshie/ssr.node": "workspace:*",
     "@freshie/ui.svelte": "workspace:*",
     "rollup-plugin-svelte": "6.0.1",
     "freshie": "workspace:*",

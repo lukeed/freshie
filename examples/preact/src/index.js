@@ -1,9 +1,9 @@
 import * as freshie from 'freshie/runtime';
-import * as svelte from '@freshie/ui.preact';
+import * as preact from '@freshie/ui.preact';
 
 freshie.start({
 	base: '/',
 	target: document.body,
-	hydrate: svelte.hydrate,
-	render: svelte.render,
+	hydrate: preact.hydrate,
+	render: preact.render,
 });
