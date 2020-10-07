@@ -5,8 +5,6 @@ import * as utils from '../utils/index';
 import { defaults } from './options';
 import * as Plugin from './plugins';
 
-// import { Runtime } from './plugins/runtime';
-
 // modified pwa/core util
 export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config.Customize.Options, context: Config.Context) {
 	for (let k in nxt) {
@@ -20,11 +18,11 @@ export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config
 	}
 }
 
-export function load(argv: Argv.Options): {
+export async function load(argv: Argv.Options): Promise<{
 	options: Config.Options;
 	server?: Rollup.Config;
 	client: Rollup.Config;
-} {
+}> {
 	const { cwd, src, isProd } = argv;
 
 	const file = utils.load<TODO>('freshie.config.js', cwd);
@@ -59,11 +57,14 @@ export function load(argv: Argv.Options): {
 		options.alias.entries[key] = resolve(src, tmp);
 	}
 
+	const routes = await utils.routes(argv.src, options.routes);
+	if (!routes.length) throw new Error('No routes found!');
+
 	// replacements
 	options.replace.__DEV__ = String(!isProd);
 	options.replace['process.env.NODE_ENV'] = JSON.stringify(isProd ? 'production' : 'development');
 
-	const client = Client(argv, options, context);
+	const client = Client(argv, routes, options, context);
 
 	let server: Nullable<Rollup.Config>;
 
@@ -84,7 +85,7 @@ export function load(argv: Argv.Options): {
 	return { options, client, server };
 }
 
-export function Client(argv: Argv.Options, options: Config.Options, context: Config.Context): Rollup.Config {
+export function Client(argv: Argv.Options, routes: Build.Route[], options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
@@ -105,6 +106,7 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 		},
 		plugins: [
 			Plugin.Router,
+			Plugin.Runtime(routes, true),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
@@ -127,7 +129,7 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 }
 
 // TODO: Server runs _after_ Client
-export function Server(argv: Argv.Options, options: Config.Options, context: Config.Context): Rollup.Config {
+export function Server(argv: Argv.Options, routes: Build.Route[], options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
@@ -144,7 +146,8 @@ export function Server(argv: Argv.Options, options: Config.Options, context: Con
 			tryCatchDeoptimization: false
 		},
 		plugins: [
-			// require('@rollup/plugin-alias')(options.alias),
+			Plugin.Runtime(routes, false),
+			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
 				...options.replace,
