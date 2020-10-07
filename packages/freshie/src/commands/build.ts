@@ -6,10 +6,11 @@ import { normalize } from '../utils/argv';
 import * as log from '../utils/log';
 import { load } from '../config';
 
-async function bundle(rollup: typeof import('rollup').rollup, configs: Config.Group) {
-	const bun = await rollup(config);
-	// TODO: generate dom + ssr at same time?
-	await Promise.all([].concat(config.output).map(bun.write));
+async function compile(rollup: typeof import('rollup').rollup, config: Config.Rollup): Promise<Rollup.Output> {
+	const start = Date.now();
+	const bun = await rollup(config).then(b => b.write(config.output));
+	console.log(`~> (${Date.now() - start}ms)`);
+	return bun;
 }
 
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
@@ -26,7 +27,7 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 
 	const { rollup } = require('rollup');
 
-	const start = Date.now();
-	await bundle(rollup, config);
-	console.log(`~> (${Date.now() - start}ms)`);
+	// TODO: Add Manifest | HTML to Client
+	await compile(rollup, config.client);
+	if (config.server) await compile(rollup, config.server);
 }

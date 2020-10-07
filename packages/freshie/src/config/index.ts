@@ -88,8 +88,8 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 	return {
 		input: join(src, 'index.js'),
 		output: {
-			dir: dest,
 			sourcemap: !isProd,
+			dir: join(dest, 'client'),
 			minifyInternalExports: isProd,
 			entryFileNames: isProd ? '[name].[hash].js' : '[name].js',
 			assetFileNames: isProd ? '[name].[hash].[ext]' : '[name].[ext]',
@@ -132,7 +132,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 	return {
 		input: join(src, 'index.js'), // TODO: DEPLOY ENTRY
 		output: {
-			file: join(dest, 'index.js'),
+			file: join(dest, 'server', 'index.js'),
 			minifyInternalExports: isProd,
 			sourcemap: !isProd,
 		},

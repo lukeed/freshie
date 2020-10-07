@@ -96,7 +96,7 @@ declare namespace Config {
 	interface Group {
 		client: Rollup;
 		options: Options;
-		server: Nullable<Rollup>;
+		server: Rollup | void;
 	}
 
 	namespace Customize {
