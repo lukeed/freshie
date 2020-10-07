@@ -18,11 +18,7 @@ export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config
 	}
 }
 
-export async function load(argv: Argv.Options): Promise<{
-	options: Config.Options;
-	server?: Rollup.Config;
-	client: Rollup.Config;
-}> {
+export async function load(argv: Argv.Options): Promise<Config.Group> {
 	const { cwd, src, isProd } = argv;
 
 	const file = utils.load<TODO>('freshie.config.js', cwd);

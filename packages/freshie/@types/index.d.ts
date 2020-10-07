@@ -93,6 +93,12 @@ declare namespace Config {
 		isProd: boolean;
 	}
 
+	interface Group {
+		client: Rollup;
+		options: Options;
+		server: Nullable<Rollup>;
+	}
+
 	namespace Customize {
 		type Rollup = (config: Config.Rollup, options: Config.Options, context: Config.Context) => void;
 		type Options = {

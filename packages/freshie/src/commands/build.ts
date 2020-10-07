@@ -2,11 +2,11 @@
 // import colors from 'kleur';
 import { existsSync } from 'fs';
 import { premove } from 'premove';
-import * as Config from '../config';
 import { normalize } from '../utils/argv';
 import * as log from '../utils/log';
+import { load } from '../config';
 
-async function bundle(rollup: typeof import('rollup').rollup, config: Rollup.Config) {
+async function bundle(rollup: typeof import('rollup').rollup, configs: Config.Group) {
 	const bun = await rollup(config);
 	// TODO: generate dom + ssr at same time?
 	await Promise.all([].concat(config.output).map(bun.write));
@@ -15,7 +15,7 @@ async function bundle(rollup: typeof import('rollup').rollup, config: Rollup.Con
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
 	normalize(src, argv, { isProd: true });
 
-	const config = await Config.load(argv as Argv.Options).catch(err => {
+	const config = await load(argv as Argv.Options).catch(err => {
 		log.bail(err.message);
 	});
 
@@ -27,6 +27,6 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 	const { rollup } = require('rollup');
 
 	const start = Date.now();
-	await bundle(rollup, config.client);
+	await bundle(rollup, config);
 	console.log(`~> (${Date.now() - start}ms)`);
 }

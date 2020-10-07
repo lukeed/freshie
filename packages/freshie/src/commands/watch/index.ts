@@ -1,8 +1,8 @@
 import { existsSync } from 'fs';
 import { premove } from 'premove';
-import * as Config from '../../config';
 import { normalize } from '../../utils/argv';
 import * as log from '../../utils/log';
+import { load } from '../../config';
 import Watcher from './watcher';
 
 async function bundle(rollup: typeof import('rollup').rollup, config: Rollup.Config) {
@@ -14,7 +14,7 @@ async function bundle(rollup: typeof import('rollup').rollup, config: Rollup.Con
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
 	normalize(src, argv, { isProd: false });
 
-	const config = await Config.load(argv as Argv.Options).catch(err => {
+	const config = await load(argv as Argv.Options).catch(err => {
 		log.bail(err.message);
 	});
 
