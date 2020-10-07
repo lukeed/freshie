@@ -84,8 +84,6 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
-	options.replace['__BROWSER__'] = options.replace['process.browser'] = 'true';
-
 	return {
 		input: join(src, 'index.js'),
 		output: {
@@ -105,9 +103,19 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 			Plugin.Router,
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
-			require('@rollup/plugin-replace')(options.replace),
-			require('@rollup/plugin-node-resolve').default({ ...options.resolve, rootDir: src }),
-			require('@rollup/plugin-json')({ compact: isProd, ...options.json }),
+			require('@rollup/plugin-replace')({
+				...options.replace,
+				'__BROWSER__': 'true',
+				'process.browser': 'true',
+			}),
+			require('@rollup/plugin-node-resolve').default({
+				...options.resolve,
+				rootDir: src
+			}),
+			require('@rollup/plugin-json')({
+				compact: isProd,
+				...options.json
+			}),
 			require('@rollup/plugin-commonjs')(options.commonjs),
 			minify && require('rollup-plugin-terser').terser(options.terser)
 		]
@@ -118,8 +126,6 @@ export function Client(argv: Argv.Options, options: Config.Options, context: Con
 export function Server(argv: Argv.Options, options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
-
-	options.replace['__BROWSER__'] = options.replace['process.browser'] = 'false';
 
 	return {
 		input: join(src, 'index.js'), // TODO: DEPLOY ENTRY
@@ -136,9 +142,19 @@ export function Server(argv: Argv.Options, options: Config.Options, context: Con
 		plugins: [
 			// require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
-			require('@rollup/plugin-replace')(options.replace),
-			require('@rollup/plugin-node-resolve').default({ ...options.resolve, rootDir: src }),
-			require('@rollup/plugin-json')({ compact: isProd, ...options.json }),
+			require('@rollup/plugin-replace')({
+				...options.replace,
+				'__BROWSER__': 'false',
+				'process.browser': 'false',
+			}),
+			require('@rollup/plugin-node-resolve').default({
+				...options.resolve,
+				rootDir: src
+			}),
+			require('@rollup/plugin-json')({
+				compact: isProd,
+				...options.json
+			}),
 			minify && require('rollup-plugin-terser').terser(options.terser)
 		]
 	};
