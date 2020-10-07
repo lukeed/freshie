@@ -49,6 +49,10 @@ export function load(argv: Argv.Options): {
 		merge(options, file, context);
 	}
 
+	// update special aliases
+	options.alias.entries['~assets'] = options.assets.dir;
+	options.alias.entries['~routes'] = options.routes.dir;
+
 	// resolve aliases
 	for (let key in options.alias.entries) {
 		let tmp = options.alias.entries[key];

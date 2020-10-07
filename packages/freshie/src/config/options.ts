@@ -4,9 +4,9 @@ export const defaults: Config.Options = {
 	alias: {
 		entries: {
 			// src resolve
-			'~routes': 'routes',
+			'~routes': '', // injected
 			'~components': 'components',
-			'~assets': 'assets',
+			'~assets': '', // injected
 			'~utils': 'utils',
 			'~tags': 'tags',
 		}
@@ -20,10 +20,12 @@ export const defaults: Config.Options = {
 
 	routes: {
 		dir: 'routes',
-		test: /\.[tj]sx?$/
+		test: /\.([tj]sx?|svelte|vue)$/,
+		layout: /^_layout/,
 	},
 
 	assets: {
+		dir: 'assets',
 		test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif|mp4|mov|ogg|webm)$/,
 	},
 

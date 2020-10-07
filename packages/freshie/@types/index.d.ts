@@ -51,9 +51,11 @@ declare namespace Config {
 		routes: {
 			dir: string;
 			test: RegExp;
+			layout: RegExp;
 		};
 
 		assets: {
+			dir: string;
 			test: RegExp;
 		};
 

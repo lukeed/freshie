@@ -50,15 +50,15 @@ export function to_pattern(rel: string) {
 /**
  * Find all Pages/Routes
  * @param src The "/src" directory path
- * @param rDir The "routes" directory name
+ * @param options The "routes" config options
  */
-export async function collect(src: string, rDir: string): Promise<Build.Route[]> {
-	const routes = join(src, rDir);
+export async function collect(src: string, options: Config.Options['routes']): Promise<Build.Route[]> {
+	const routes = join(src, options.dir);
 	if (!existsSync(routes)) return [];
 
-	const LAYOUT = /^_layout/;
 	// TODO: configure extension
-	const EXTN = /\.([tj]sx?|svelte|vue)$/;
+	const EXTN = options.test;
+	const LAYOUT = options.layout;
 	const PAGES = new Map<string, Build.Route>();
 
 	const isLayout = (str: string) => LAYOUT.test(str) && EXTN.test(str);
