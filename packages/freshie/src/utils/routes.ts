@@ -24,13 +24,14 @@ export function to_segment(name: string): Segment {
 }
 
 export function to_pattern(rel: string) {
-	let pattern='/', wild=null;
 	let { dir, name } = parse(rel);
+	let pattern='/', wild=null, type=0;
 	let arr = [...dir.split(/[\\\/]+/g), name];
 
 	for (let i=0, tmp: Segment; i < arr.length; i++) {
 		if (!arr[i]) continue; // no dir
 		tmp = to_segment(arr[i]);
+		type = Math.max(type, tmp[0]);
 
 		if (tmp[1]) {
 			if (pattern.length > 1) pattern += '/';
@@ -43,7 +44,7 @@ export function to_pattern(rel: string) {
 		}
 	}
 
-	return { pattern, wild };
+	return { pattern, wild, type };
 }
 
 /**
@@ -69,7 +70,7 @@ export async function collect(src: string, rDir: string): Promise<Build.Route[]>
 		const info: Build.Route = {
 			...to_pattern(rel),
 			file: absolute,
-			layout: null
+			layout: null,
 		};
 
 		// scale upwards to find closest `_layout.svelte` file

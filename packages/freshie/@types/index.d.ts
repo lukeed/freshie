@@ -102,6 +102,7 @@ declare namespace Build {
 	interface Route {
 		file: string;
 		pattern: string;
+		type: number;
 		layout: Nullable<string>;
 		wild: Nullable<string>;
 	}

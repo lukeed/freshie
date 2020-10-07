@@ -45,73 +45,73 @@ toPattern('should be a function', () => {
 toPattern('should return { pattern, wild } object', () => {
 	assert.equal(
 		utils.to_pattern(''),
-		{ pattern: '/', wild: null }
+		{ pattern: '/', wild: null, type: 0 }
 	);
 });
 
 toPattern('should handle "static" routes', () => {
 	assert.equal(
 		utils.to_pattern('index.js'),
-		{ pattern: '/', wild: null }
+		{ pattern: '/', wild: null, type: 0 }
 	);
 
 	assert.equal(
 		utils.to_pattern('blog.tsx'),
-		{ pattern: '/blog', wild: null }
+		{ pattern: '/blog', wild: null, type: 0 }
 	);
 
 	assert.equal(
 		utils.to_pattern('blog/hello.ts'),
-		{ pattern: '/blog/hello', wild: null }
+		{ pattern: '/blog/hello', wild: null, type: 0 }
 	);
 
 	assert.equal(
 		utils.to_pattern('about/index.js'),
-		{ pattern: '/about', wild: null }
+		{ pattern: '/about', wild: null, type: 0 }
 	);
 
 	assert.equal(
 		utils.to_pattern('foo.bar'),
-		{ pattern: '/foo', wild: null }
+		{ pattern: '/foo', wild: null, type: 0 }
 	);
 });
 
 toPattern('should handle "param" routes', () => {
 	assert.equal(
 		utils.to_pattern('[id].js'),
-		{ pattern: '/:id', wild: null }
+		{ pattern: '/:id', wild: null, type: 1 }
 	);
 
 	assert.equal(
 		utils.to_pattern('[slug].js'),
-		{ pattern: '/:slug', wild: null }
+		{ pattern: '/:slug', wild: null, type: 1 }
 	);
 
 	assert.equal(
 		utils.to_pattern('blog/[id?].ts'),
-		{ pattern: '/blog/:id?', wild: null }
+		{ pattern: '/blog/:id?', wild: null, type: 1 }
 	);
 
 	assert.equal(
 		utils.to_pattern('foo/bar/[slug?].jsx'),
-		{ pattern: '/foo/bar/:slug?', wild: null }
+		{ pattern: '/foo/bar/:slug?', wild: null, type: 1 }
 	);
 
 	assert.equal(
 		utils.to_pattern('blog/[year]/[month]/[slug]/index.jsx'),
-		{ pattern: '/blog/:year/:month/:slug', wild: null }
+		{ pattern: '/blog/:year/:month/:slug', wild: null, type: 1 }
 	);
 });
 
 toPattern('should handle "wild" routes', () => {
 	assert.equal(
 		utils.to_pattern('[...id].tsx'),
-		{ pattern: '/*', wild: 'id' }
+		{ pattern: '/*', wild: 'id', type: 2 }
 	);
 
 	assert.equal(
 		utils.to_pattern('blog/[...slug].js'),
-		{ pattern: '/blog/*', wild: 'slug' }
+		{ pattern: '/blog/*', wild: 'slug', type: 2 }
 	);
 });
 
