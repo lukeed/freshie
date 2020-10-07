@@ -9,13 +9,13 @@ async function xform(routes: Build.Route[], isDOM: boolean): Promise<string> {
 
 	// TODO: layout files
 	let imports='', defines='';
-	routes.forEach(tmp => {
+	routes.forEach((tmp, idx) => {
 		if (defines) defines += '\n\t';
 		if (isDOM) {
 			defines += `define('${tmp.pattern}', () => import('${tmp.file}'));`;
 		} else {
-			imports += `import * as ${tmp.name/*TODO*/} from '${tmp.file}';\n`;
-			defines += `define('${tmp.pattern}', ${tmp.name/*TODO*/});`
+			imports += `import * as $Route${idx} from '${tmp.file}';\n`;
+			defines += `define('${tmp.pattern}', $Route${idx});`
 		}
 	});
 
