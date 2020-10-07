@@ -40,11 +40,11 @@ declare namespace Config {
 		}>;
 
 		ssr: {
-			type: 'worker' | 'lambda' | 'node';
+			type: 'node' | 'worker' | 'lambda';
 			entry: string; // path to entry
 			render: string; // path to renderer
 			// render<T>(): Promisable<T>;
-			bucket?: string;
+			// bucket?: string;
 		};
 
 		routes: {
