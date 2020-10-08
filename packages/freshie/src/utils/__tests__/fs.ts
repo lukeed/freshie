@@ -133,3 +133,29 @@ list('should throw error if input does not exist', async () => {
 });
 
 list.run();
+
+// ---
+
+const match = suite('match', {
+	list: ['hello', 'helloooo', 'world']
+});
+
+match('should be a function', () => {
+	assert.type(utils.match, 'function');
+});
+
+match('should return a value matching the RegExp pattern', ctx => {
+	assert.is(utils.match(ctx.list, /^wor/), 'world');
+});
+
+match('should return the first match only', ctx => {
+	assert.is(utils.match(ctx.list, /hel/), 'hello');
+	assert.is(utils.match(ctx.list, /o{2,}$/), 'helloooo');
+});
+
+match('should return `void` if no matches', ctx => {
+	assert.is(utils.match(ctx.list, /foo/), undefined);
+	assert.is(utils.match(ctx.list, /123/), undefined);
+});
+
+match.run();

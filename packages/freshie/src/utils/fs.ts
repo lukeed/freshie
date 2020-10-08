@@ -12,3 +12,7 @@ export const exists = fs.existsSync;
 export function isDir(str: string): boolean {
 	return exists(str) && fs.statSync(str).isDirectory();
 }
+
+export function match(arr: string[], pattern: RegExp): string | void {
+	return arr.find(x => pattern.test(x));
+}

@@ -65,7 +65,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	// resolve copy list (from src dir)
 	options.copy = options.copy.map(dir => {
 		return resolve(src, dir);
-	})
+	});
 
 	// replacements
 	options.replace.__DEV__ = String(!isProd);
@@ -98,21 +98,12 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 
 	// auto-detect entries; set SSR entry
 	await fs.list(src).then(files => {
-		let ssr = '';
+		let rel = fs.match(files, /index\.(dom\.)?[tjm]sx?/);
+		if (rel) client.input = join(src, rel);
 
-		files.forEach(rel => {
-			if (/index\.(dom\.)?[tjm]sx?/.test(rel)) {
-				client.input = join(src, rel);
-			} else if (server) {
-				ssr = ssr || (/index\.ssr\.[tjm]sx?/.test(rel) && rel);
-			}
-		});
-
-		if (server && ssr) {
-			server.input = join(src, ssr);
-		} else if (server) {
-			server.input = options.ssr.entry;
-		}
+		rel = server && fs.match(files, /index\.ssr\.[tjm]sx?/);
+		if (server && rel) server.input = join(src, rel);
+		else if (server) server.input = options.ssr.entry;
 	});
 
 	customize.forEach(mutate => {
