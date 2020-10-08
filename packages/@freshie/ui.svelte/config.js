@@ -1,5 +1,10 @@
-const { join } = require('path');
-
-exports.ssr = function (config) {
-	config.render = join(__dirname, 'render.mjs');
+exports.rollup = function (config, options, context) {
+	config.plugins.push(
+		// @ts-ignore
+		require('rollup-plugin-svelte')({
+			hydratable: true,
+			generate: context.ssr ? 'ssr' : 'dom',
+			css: false,
+		})
+	)
 }

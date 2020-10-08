@@ -4,5 +4,8 @@
   "peerDependencies": {
     "freshie": "workspace:*",
     "svelte": "^3.25.0"
+  },
+  "dependencies": {
+    "rollup-plugin-svelte": "^6.0.0"
   }
 }
