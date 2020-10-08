@@ -1,5 +1,5 @@
 import { join, resolve } from 'path';
-import { isDir } from './index';
+import { isDir } from './fs';
 
 // default = true
 export const toBool = (val?: unknown) => val == null || !/(0|false)/.test(val as string);

@@ -1,5 +1,6 @@
+import { readFileSync } from 'fs';
 import { totalist } from 'totalist';
-import { existsSync, readFileSync } from 'fs';
+import { exists } from '../../utils/fs';
 
 export function Copy(dirs: string[] = []): Rollup.Plugin {
 	return {
@@ -7,7 +8,7 @@ export function Copy(dirs: string[] = []): Rollup.Plugin {
 		async generateBundle() {
 			await Promise.all(
 				dirs.map(dir => {
-					return existsSync(dir) && totalist(dir, (rel, abs) => {
+					return exists(dir) && totalist(dir, (rel, abs) => {
 						this.emitFile({
 							type: 'asset',
 							source: readFileSync(abs),

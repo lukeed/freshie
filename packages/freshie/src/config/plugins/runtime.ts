@@ -1,10 +1,10 @@
 import { join } from 'path';
-import * as utils from '../../utils';
+import * as fs from '../../utils/fs';
 
 const RUNTIME = join(__dirname, '..', 'runtime', 'index.dom.js');
 
 async function xform(file: string, routes: Build.Route[], isDOM: boolean): Promise<string> {
-	let fdata = await utils.read(file, 'utf8');
+	let fdata = await fs.read(file, 'utf8');
 
 	// TODO: layout files
 	let imports='', defines='';

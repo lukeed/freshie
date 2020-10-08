@@ -3,6 +3,7 @@ import { join, resolve } from 'path';
 import * as scoped from '../utils/scoped';
 import * as utils from '../utils/index';
 import * as log from '../utils/log';
+import * as fs from '../utils/fs';
 import { defaults } from './options';
 import * as Plugin from './plugins';
 
@@ -96,7 +97,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	}
 
 	// auto-detect entries; set SSR entry
-	await utils.list(src).then(files => {
+	await fs.list(src).then(files => {
 		let ssr = '';
 
 		files.forEach(rel => {

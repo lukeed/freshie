@@ -1,8 +1,8 @@
-import { existsSync } from 'fs';
 import { join, parse, relative } from 'path';
 import { totalist } from 'totalist';
 import escalade from 'escalade';
 import rsort from 'route-sort';
+import { exists } from './fs';
 
 // 0=static, 1=param, 2=wild
 export const enum Pattern {
@@ -54,7 +54,7 @@ export function to_pattern(rel: string) {
  */
 export async function collect(src: string, options: Config.Options['routes']): Promise<Build.Route[]> {
 	const routes = join(src, options.dir);
-	if (!existsSync(routes)) return [];
+	if (!exists(routes)) return [];
 
 	// TODO: configure extension
 	const EXTN = options.test;

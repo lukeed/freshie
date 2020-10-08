@@ -1,9 +1,9 @@
 // import klona from 'klona';
 // import colors from 'kleur';
-import { existsSync } from 'fs';
 import { premove } from 'premove';
 import { normalize } from '../utils/argv';
 import * as log from '../utils/log';
+import * as fs from '../utils/fs';
 import { load } from '../config';
 
 async function compile(rollup: typeof import('rollup').rollup, config: Config.Rollup): Promise<Rollup.Output> {
@@ -15,7 +15,7 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 
 	const config = await load(argv as Argv.Options).catch(log.bail);
 
-	if (existsSync(argv.dest)) {
+	if (fs.exists(argv.dest)) {
 		log.warn(`Removing "${ log.$dir(argv.destDir) }" directory`);
 		await premove(argv.dest);
 	}
