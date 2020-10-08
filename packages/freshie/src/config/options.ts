@@ -28,6 +28,8 @@ export const defaults: Config.Options = {
 		test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif|mp4|mov|ogg|webm)$/,
 	},
 
+	copy: ['static', 'public'],
+
 	replace: {
 		// updated
 		'__DEV__': 'true',

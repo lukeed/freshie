@@ -54,6 +54,8 @@ declare namespace Config {
 			layout: RegExp;
 		};
 
+		copy: string[];
+
 		assets: {
 			dir: string;
 			test: RegExp;

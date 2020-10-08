@@ -60,6 +60,11 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	const routes = await utils.routes(argv.src, options.routes);
 	if (!routes.length) throw new Error('No routes found!');
 
+	// resolve copy list (from src dir)
+	options.copy = options.copy.map(dir => {
+		return resolve(src, dir);
+	})
+
 	// replacements
 	options.replace.__DEV__ = String(!isProd);
 	options.replace['process.env.NODE_ENV'] = JSON.stringify(isProd ? 'production' : 'development');
@@ -138,6 +143,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 		},
 		plugins: [
 			Plugin.Router,
+			Plugin.Copy(options.copy),
 			Plugin.Runtime(routes, true),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,

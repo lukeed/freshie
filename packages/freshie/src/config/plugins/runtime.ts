@@ -26,7 +26,7 @@ export function Runtime(routes: Build.Route[], isDOM: boolean): Rollup.Plugin {
 	const ident = 'freshie/runtime';
 
 	const Plugin: Rollup.Plugin = {
-		name: 'freshie/runtime',
+		name: 'plugins/runtime',
 		load: id => {
 			if (id === ident) return xform(RUNTIME, routes, isDOM);
 			if (/[\\\/]+@freshie\/ssr/.test(id)) return xform(id, routes, isDOM);
