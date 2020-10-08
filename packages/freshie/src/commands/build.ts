@@ -16,9 +16,7 @@ async function compile(rollup: typeof import('rollup').rollup, config: Config.Ro
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
 	normalize(src, argv, { isProd: true });
 
-	const config = await load(argv as Argv.Options).catch(err => {
-		log.bail(err.message);
-	});
+	const config = await load(argv as Argv.Options).catch(log.bail);
 
 	if (existsSync(argv.dest)) {
 		console.warn(`Removing "${argv.destDir}" directory`);
