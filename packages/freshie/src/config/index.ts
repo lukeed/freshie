@@ -28,14 +28,16 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	const customize: Config.Customize.Rollup[] = [];
 	const context: Config.Context = { isProd, ssr: false }; // TODO: ssr value
 
-	// auto-load @freshie packages
-	scoped.list(cwd).forEach(name => {
+	function autoload(name: string) {
 		console.log(`Applying ${name}`);
 		let abs = utils.from(cwd, join(name, 'config.js'));
 		let tmp = require(abs); // allow potential throw
 		if (tmp.rollup) customize.push(tmp.rollup);
 		merge(options, tmp, context);
-	});
+	}
+
+	// auto-load @freshie packages
+	scoped.list(cwd).forEach(autoload);
 
 	if (file) {
 		console.log('loading custom config');
@@ -43,14 +45,16 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		merge(options, file, context);
 	}
 
+	const aliases = options.alias.entries;
+
 	// update special aliases
-	options.alias.entries['~assets'] = options.assets.dir;
-	options.alias.entries['~routes'] = options.routes.dir;
+	aliases['~assets'] = options.assets.dir;
+	aliases['~routes'] = options.routes.dir;
 
 	// resolve aliases
-	for (let key in options.alias.entries) {
-		let tmp = options.alias.entries[key];
-		options.alias.entries[key] = resolve(src, tmp);
+	for (let key in aliases) {
+		let tmp = aliases[key];
+		aliases[key] = resolve(src, tmp);
 	}
 
 	const routes = await utils.routes(argv.src, options.routes);
@@ -68,13 +72,21 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	if (argv.ssr && !isProd) {
 		options.ssr.type = 'node';
 	} else if (argv.ssr && !options.ssr.type) {
-		// TODO: "cannot create SSR bundle without..."
-		throw new Error('Missing `options.ssr.type` value!');
-	} else if (argv.ssr) {
-		// console.log('TODO: load `options.ssr` values')
+		autoload('@freshie/ssr.node');
+	} else if (!argv.ssr) {
+		options.ssr.type = null; // --no-ssr
+	}
+
+	if (argv.ssr && options.ssr.type) {
+		// Apply special SSR aliases
+		scoped.list(cwd).forEach(name => {
+			if (/[/]ui\./.test(name)) {
+				aliases['~!!ui!!~'] = utils.from(cwd, name);
+			}
+		});
+
+		// Create SSR bundle config
 		server = Server(argv, routes, options, context);
-	} else {
-		// --no-ssr
 	}
 
 	// auto-detect entries; set SSR entry
@@ -109,6 +121,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 	const { isProd } = context;
 
 	return {
+		// NOTE: may inject auto-detect
 		input: join(src, 'index.dom.js'),
 		output: {
 			sourcemap: !isProd,
@@ -152,7 +165,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 	const { isProd } = context;
 
 	return {
-		// TODO: set via options.ssr.entry
+		// NOTE: may inject auto-detect
 		input: join(src, 'index.ssr.js'),
 		output: {
 			file: join(dest, 'server', 'index.js'),

@@ -21,6 +21,7 @@
     "router"
   ],
   "dependencies": {
+    "@freshie/ssr.node": "workspace:*",
     "@rollup/plugin-alias": "^3.1.0",
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-json": "^4.1.0",

@@ -18,7 +18,7 @@ export function load<T=unknown>(str: string, dir?: string): T | false {
 }
 
 export function from(dir: string, id: string) {
-	return require.resolve(id, { paths: [dir] });
+	return require.resolve(id, { paths: [dir, __dirname] });
 }
 
 export function isDir(str: string): boolean {
