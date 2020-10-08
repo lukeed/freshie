@@ -7,10 +7,7 @@ import * as log from '../utils/log';
 import { load } from '../config';
 
 async function compile(rollup: typeof import('rollup').rollup, config: Config.Rollup): Promise<Rollup.Output> {
-	const start = Date.now();
-	const bun = await rollup(config).then(b => b.write(config.output));
-	console.log(`~> (${Date.now() - start}ms)`); // TODO: pretty log
-	return bun;
+	return rollup(config).then(b => b.write(config.output));
 }
 
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
@@ -28,4 +25,5 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 	// TODO: Add Manifest | HTML to Client
 	await compile(rollup, config.client);
 	if (config.server) await compile(rollup, config.server);
+	log.success('Build complete! 🎉');
 }

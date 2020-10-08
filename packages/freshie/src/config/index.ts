@@ -146,6 +146,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 			Plugin.Router,
 			Plugin.Copy(options.copy),
 			Plugin.Runtime(routes, true),
+			Plugin.Summary({ isDOM: true }),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
@@ -186,6 +187,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 		},
 		plugins: [
 			Plugin.Runtime(routes, false),
+			Plugin.Summary({ isDOM: false }),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
