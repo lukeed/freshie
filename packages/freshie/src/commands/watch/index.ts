@@ -11,7 +11,7 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 	const config = await load(argv as Argv.Options).catch(log.bail);
 
 	if (existsSync(argv.dest)) {
-		log.warn(`Removing "${argv.destDir}" directory`);
+		log.warn(`Removing "${ log.$dir(argv.destDir) }" directory`);
 		await premove(argv.dest);
 	}
 

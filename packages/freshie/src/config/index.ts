@@ -30,7 +30,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	const context: Config.Context = { isProd, ssr: false }; // TODO: ssr value
 
 	function autoload(name: string) {
-		log.info(`Applying ${name}`);
+		log.info(`Applying ${ log.$pkg(name) } preset`);
 		let abs = utils.from(cwd, join(name, 'config.js'));
 		let tmp = require(abs); // allow potential throw
 		if (tmp.rollup) customize.push(tmp.rollup);
@@ -41,7 +41,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	scoped.list(cwd).forEach(autoload);
 
 	if (file) {
-		log.info('loading custom config');
+		log.info(`Applying "${ log.$dir('freshie.config.js') }" config`);
 		if (file.rollup) customize.push(file.rollup);
 		merge(options, file, context);
 	}

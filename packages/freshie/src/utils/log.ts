@@ -22,3 +22,6 @@ export function bail(msg: Error | string, code = 1): never {
 	error(msg instanceof Error ? msg.stack : msg);
 	process.exit(code);
 }
+
+export const $pkg = colors.magenta;
+export const $dir = colors.bold().white;
