@@ -58,21 +58,18 @@ normalize('should ensure `Argv.Options` has values', () => {
 normalize('should accept `Argv.Options` partial values', () => {
 	const input: Partial<Argv.Options> = {
 		cwd: __dirname,
-		dest: 'output',
 		minify: false,
 	};
 
 	utils.normalize('hello', input);
 
-	const cwd = resolve('.');
-
 	assert.is(input.cwd, __dirname);
 
 	assert.is(input.srcDir, 'hello');
-	assert.is(input.destDir, 'output');
+	assert.is(input.destDir, 'build');
 
 	assert.is(input.src, __dirname); // "{cwd}/src" missing
-	assert.is(input.dest, resolve(cwd, 'output'));
+	assert.is(input.dest, resolve(__dirname, 'build'));
 
 	assert.is(input.ssr, true);
 	assert.is(input.minify, false);
