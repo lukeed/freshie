@@ -1,6 +1,3 @@
-// import klona from 'klona';
-// import colors from 'kleur';
-import { premove } from 'premove';
 import { normalize } from '../utils/argv';
 import * as log from '../utils/log';
 import * as fs from '../utils/fs';
@@ -17,7 +14,7 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 
 	if (fs.exists(argv.dest)) {
 		log.warn(`Removing "${ log.$dir(argv.destDir) }" directory`);
-		await premove(argv.dest);
+		await fs.remove(argv.dest);
 	}
 
 	const { rollup } = require('rollup');
