@@ -2,6 +2,7 @@ import { klona } from 'klona';
 import { join, resolve } from 'path';
 import * as scoped from '../utils/scoped';
 import * as utils from '../utils/index';
+import * as log from '../utils/log';
 import { defaults } from './options';
 import * as Plugin from './plugins';
 
@@ -29,7 +30,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	const context: Config.Context = { isProd, ssr: false }; // TODO: ssr value
 
 	function autoload(name: string) {
-		console.log(`Applying ${name}`);
+		log.info(`Applying ${name}`);
 		let abs = utils.from(cwd, join(name, 'config.js'));
 		let tmp = require(abs); // allow potential throw
 		if (tmp.rollup) customize.push(tmp.rollup);
@@ -40,7 +41,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	scoped.list(cwd).forEach(autoload);
 
 	if (file) {
-		console.log('loading custom config');
+		log.info('loading custom config');
 		if (file.rollup) customize.push(file.rollup);
 		merge(options, file, context);
 	}

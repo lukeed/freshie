@@ -9,7 +9,7 @@ import { load } from '../config';
 async function compile(rollup: typeof import('rollup').rollup, config: Config.Rollup): Promise<Rollup.Output> {
 	const start = Date.now();
 	const bun = await rollup(config).then(b => b.write(config.output));
-	console.log(`~> (${Date.now() - start}ms)`);
+	console.log(`~> (${Date.now() - start}ms)`); // TODO: pretty log
 	return bun;
 }
 
@@ -19,7 +19,7 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 	const config = await load(argv as Argv.Options).catch(log.bail);
 
 	if (existsSync(argv.dest)) {
-		console.warn(`Removing "${argv.destDir}" directory`);
+		log.warn(`Removing "${argv.destDir}" directory`);
 		await premove(argv.dest);
 	}
 
