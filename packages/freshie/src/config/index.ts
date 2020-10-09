@@ -104,6 +104,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		options.ssr.type = 'node';
 	} else if (argv.ssr && !options.ssr.type) {
 		autoload('@freshie/ssr.node');
+		entries.ssr = entries.ssr || options.ssr.entry;
 	} else if (!argv.ssr) {
 		options.ssr.type = null; // --no-ssr
 	}
@@ -118,7 +119,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 
 		// Create SSR bundle config
 		server = Server(argv, routes, options, context);
-		server.input = entries.ssr; // inject entry
+		server.input = entries.ssr; // inject entry point
 	}
 
 	customize.forEach(mutate => {
