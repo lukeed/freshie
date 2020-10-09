@@ -14,7 +14,10 @@ export function normalize(src: Nullable<string>, argv: Partial<Argv.Options>, ex
 	// use root if "/src" does not exist
 	argv.src = isDir(argv.src) ? argv.src : cwd;
 
+	// default = false
+	argv.isProd = !!argv.isProd;
+	argv.minify = argv.isProd && toBool(argv.minify);
+
 	// default = true
 	argv.ssr = toBool(argv.ssr);
-	argv.minify = toBool(argv.minify);
 }

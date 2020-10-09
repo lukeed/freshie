@@ -52,13 +52,14 @@ normalize('should ensure `Argv.Options` has values', () => {
 	assert.is(input.dest, resolve(cwd, 'build'));
 
 	assert.is(input.ssr, true);
-	assert.is(input.minify, true);
+	assert.is(input.isProd, false);
+	assert.is(input.minify, false);
 });
 
 normalize('should accept `Argv.Options` partial values', () => {
 	const input: Partial<Argv.Options> = {
 		cwd: __dirname,
-		minify: false,
+		minify: true,
 	};
 
 	utils.normalize('hello', input);
@@ -72,13 +73,22 @@ normalize('should accept `Argv.Options` partial values', () => {
 	assert.is(input.dest, resolve(__dirname, 'build'));
 
 	assert.is(input.ssr, true);
-	assert.is(input.minify, false);
+	assert.is(input.isProd, false);
+	assert.is(input.minify, false); // isProd = false
 });
 
 normalize('should accept extra values', () => {
 	const input: Partial<Argv.Options> = {};
 	utils.normalize('', input, { isProd: true });
 	assert.is(input.isProd, true);
+	assert.is(input.minify, true);
+});
+
+normalize('should allow `minify` to be disabled in production', () => {
+	const input: Partial<Argv.Options> = {};
+	utils.normalize('', input, { isProd: true, minify: false });
+	assert.is(input.isProd, true);
+	assert.is(input.minify, false);
 });
 
 normalize.run();
