@@ -62,8 +62,8 @@ export function HTML(template: string, opts: Options = {}): Rollup.Plugin {
 					} else if (/\.m?js$/.test(filename)) {
 						if (preload) append(dochead, toPreload(filename, 'script'));
 						if (/esm?/.test(format)) {
-							// TODO(future): only use "modulepreload" when better supported
-							// if (preload) append(dochead, `<link rel="modulepreload" href="${filename}" />`);
+							// TODO(future): "preload" => "modulepreload" *only* when better supported
+							if (preload) append(dochead, `<link rel="modulepreload" href="${filename}" />`);
 							append(docbody, `<script type="module" src="${filename}"></script>`);
 							append(docbody, `<script nomodule defer src="https://unpkg.com/dimport/nomodule" data-main="${filename}"></script>`);
 						} else {
