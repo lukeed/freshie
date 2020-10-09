@@ -5,3 +5,13 @@ exports.ssr = function (config) {
 	// set fallback entry point
 	config.entry = join(__dirname, 'entry.js');
 }
+
+exports.rollup = function (config, options, context) {
+	if (!context.ssr) return;
+	config.output.format = 'cjs';
+	config.output.esModule = false;
+	config.external = [
+		...(config.external || []),
+		...require('module').builtinModules,
+	];
+}
