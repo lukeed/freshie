@@ -11,8 +11,24 @@ export function hydrate(Tag, props, target) {
 
 // ---
 
-export function ssr(Tag, props={}) {
-	let { head='', html='', css } = Tag.render(props);
-	if (css && css.code) head += `<style>${css.code}</style>`;
-	return { head, body: html };
+export function ssr(Tags, props={}) {
+	let head='', body='';
+	let slots, len=Tags.length;
+
+	if (len > 0) {
+		while (len-- > 1) {
+			// NOTE: you can ONLY use <slot/> in layouts
+			slots = { default: () => Tags[len].render(props, slots) };
+		}
+
+		let ssr = Tags[0].render(props, slots);
+
+		body += ssr.html;
+		head += ssr.head || '';
+		if (ssr.css && ssr.css.code) {
+			head += `<style>${ssr.css.code}</style>`;
+		}
+	}
+
+	return { head, body };
 }
