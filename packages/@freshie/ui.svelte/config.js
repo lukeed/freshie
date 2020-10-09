@@ -1,10 +1,14 @@
+exports.svelte = {
+	hydratable: true,
+	css: false,
+}
+
+// TODO: load CWD/svelte.config.js values
 exports.rollup = function (config, options, context) {
 	config.plugins.push(
-		// @ts-ignore
 		require('rollup-plugin-svelte')({
-			hydratable: true,
 			generate: context.ssr ? 'ssr' : 'dom',
-			css: false,
+			...options.svelte,
 		})
-	)
+	);
 }
