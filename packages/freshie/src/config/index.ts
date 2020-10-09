@@ -59,19 +59,43 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		aliases[key] = resolve(src, tmp);
 	}
 
+	// find/parse "routes" directory
 	const routes = await utils.routes(argv.src, options.routes);
 	if (!routes.length) throw new Error('No routes found!');
+
+	// auto-detect entries; set SSR fallback
+	const entries = await fs.list(src).then(files => {
+		// dom: index.{ext} || index.dom.{ext}
+		let dom = fs.match(files, /index\.(dom\.)?[tjm]sx?$/);
+		if (dom) dom = join(src, dom);
+
+		// ssr: index.ssr.{ext}
+		let ssr = fs.match(files, /index\.ssr\.[tjm]sx?$/);
+		ssr = ssr ? join(src, ssr) : options.ssr.entry;
+
+		// html: index.html || index.html.{ext}
+		let html = fs.match(files, /index\.html(\.(svelte|vue|[tjm]sx?))?$/);
+		if (html) html = join(src, html);
+
+		return { dom, ssr, html };
+	});
+
+	if (!entries.dom) throw new Error('Missing "DOM" entry file!');
+	if (!entries.html) throw new Error('Missing HTML template file!');
 
 	// resolve copy list (from src dir)
 	options.copy = options.copy.map(dir => {
 		return resolve(src, dir);
 	});
 
-	// replacements
+	// update *shared* replacements
 	options.replace.__DEV__ = String(!isProd);
 	options.replace['process.env.NODE_ENV'] = JSON.stringify(isProd ? 'production' : 'development');
 
+	// build DOM configuration
 	const client = Client(argv, routes, options, context);
+	client.plugins.unshift(Plugin.HTML(entries.html, options));
+	client.input = entries.dom; // inject entry point
 
 	let server: Nullable<Rollup.Config>;
 
@@ -94,17 +118,8 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 
 		// Create SSR bundle config
 		server = Server(argv, routes, options, context);
+		server.input = entries.ssr; // inject entry
 	}
-
-	// auto-detect entries; set SSR entry
-	await fs.list(src).then(files => {
-		let rel = fs.match(files, /index\.(dom\.)?[tjm]sx?/);
-		if (rel) client.input = join(src, rel);
-
-		rel = server && fs.match(files, /index\.ssr\.[tjm]sx?/);
-		if (server && rel) server.input = join(src, rel);
-		else if (server) server.input = options.ssr.entry;
-	});
 
 	customize.forEach(mutate => {
 		mutate(client, options, context);
@@ -119,7 +134,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 	const { isProd } = context;
 
 	return {
-		// NOTE: may inject auto-detect
+		// NOTE: may detect & inject
 		input: join(src, 'index.dom.js'),
 		output: {
 			sourcemap: !isProd,
@@ -165,7 +180,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 	const { isProd } = context;
 
 	return {
-		// NOTE: may inject auto-detect
+		// NOTE: may detect & inject
 		input: join(src, 'index.ssr.js'),
 		output: {
 			file: join(dest, 'server', 'index.js'),
