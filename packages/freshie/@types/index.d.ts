@@ -93,6 +93,7 @@ declare namespace Config {
 	interface Context {
 		ssr: boolean;
 		isProd: boolean;
+		minify: boolean;
 	}
 
 	interface Group {

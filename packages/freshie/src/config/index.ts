@@ -20,15 +20,16 @@ export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config
 	}
 }
 
+// TODO: save `merge` functions and apply twice (ssr vs dom)
 export async function load(argv: Argv.Options): Promise<Config.Group> {
-	const { cwd, src, isProd } = argv;
+	const { cwd, src, isProd, minify } = argv;
 
 	const file = utils.load<TODO>('freshie.config.js', cwd);
 
 	// planning to mutate
 	const options = klona(defaults);
 	const customize: Config.Customize.Rollup[] = [];
-	const context: Config.Context = { isProd, ssr: false }; // TODO: ssr value
+	const context: Config.Context = { isProd, minify, ssr: false }; // TODO: ssr value
 
 	function autoload(name: string) {
 		log.info(`Applying ${ log.$pkg(name) } preset`);
@@ -124,7 +125,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 
 	customize.forEach(mutate => {
 		mutate(client, options, context);
-		if (server) mutate(server, options, context);
+		if (server) mutate(server, options, { ...context, ssr: true }); // TODO: should not be here
 	});
 
 	return { options, client, server };
