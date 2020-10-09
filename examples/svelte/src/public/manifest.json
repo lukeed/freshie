@@ -1,0 +1,21 @@
+{
+  "short_name": "freshie",
+  "name": "freshie + svelte",
+  "background_color": "#3E82F7",
+  "orientation": "portrait",
+  "theme_color": "#1e88e5",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/icon@2x.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    }
+  ]
+}
