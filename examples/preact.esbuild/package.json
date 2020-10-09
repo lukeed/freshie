@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "freshie build"
+  },
+  "dependencies": {
+    "preact": "10.4.8"
+  },
+  "devDependencies": {
+    "esbuild": "0.7.7",
+    "@freshie/plugin.esbuild": "workspace:*",
+    "@freshie/ui.preact": "workspace:*",
+    "freshie": "workspace:*"
+  }
+}

@@ -9,9 +9,8 @@ exports.babel = function (config) {
 	);
 }
 
-// TODO: plugin.esbuild
-// TODO: options.ui.extension (for route)
+// TODO: options.ui.extension (for loaders/include)
 exports.esbuild = function (config) {
-	config.jsxFactory = 'preact.h';
-	config.jsxFragment = 'preact.Fragment';
+	config.jsxFragment = 'Fragment';
+	config.jsxFactory = 'h';
 }
