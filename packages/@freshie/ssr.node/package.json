@@ -1,6 +1,10 @@
 {
   "version": "0.0.0",
   "name": "@freshie/ssr.node",
+  "dependencies": {
+    "@polka/url": "next",
+    "regexparam": "^1.3.0"
+  },
   "peerDependencies": {
     "freshie": "workspace:*"
   }
