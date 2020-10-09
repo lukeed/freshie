@@ -40,7 +40,7 @@ export const defaults: Config.Options = {
 
 	resolve: {
 		extensions: ['.mjs', '.js', '.jsx', '.json'],
-		mainFields: ['browser', 'module', 'jsnext', 'main'],
+		mainFields: ['module', 'jsnext', 'jsnext:main', 'main'],
 	},
 
 	commonjs: {

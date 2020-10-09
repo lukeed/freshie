@@ -164,6 +164,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 				'process.browser': 'true',
 			}),
 			require('@rollup/plugin-node-resolve').default({
+				browser: true,
 				...options.resolve,
 				rootDir: src
 			}),
@@ -205,8 +206,9 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 				'process.browser': 'false',
 			}),
 			require('@rollup/plugin-node-resolve').default({
+				browser: false,
 				...options.resolve,
-				rootDir: src
+				rootDir: src,
 			}),
 			require('@rollup/plugin-json')({
 				compact: isProd,
