@@ -13,7 +13,7 @@ export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config
 		if (k === 'rollup') continue;
 		if (typeof nxt[k] === 'function') {
 			old[k] = old[k] || {};
-			nxt[k](old[k], context);
+			nxt[k](old[k], context); // TODO? pass `old|options` 2nd
 		} else {
 			old[k] = nxt[k] || old[k];
 		}

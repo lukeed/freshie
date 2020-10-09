@@ -105,7 +105,7 @@ declare namespace Config {
 	namespace Customize {
 		type Rollup = (config: Config.Rollup, options: Config.Options, context: Config.Context) => void;
 		type Options = {
-			[K in keyof Config.Options]: (options: Config.Options[K], context: Config.Context) => void;
+			[K in keyof Config.Options]: (config: Config.Options[K], context: Config.Context) => void;
 		};
 	}
 }
