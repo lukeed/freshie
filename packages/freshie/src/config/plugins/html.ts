@@ -15,8 +15,10 @@ function append(base: HTMLElement, content: string) {
 	base.appendChild(node);
 }
 
+// TODO? add `nomodule` option
+// TODO? expose `preload` option
 interface Options {
-	preload?: boolean; // TODO: argv
+	preload?: boolean;
 	publicPath?: string;
 	minify?: boolean;
 }
@@ -24,7 +26,6 @@ interface Options {
 // TODO: preload `routes` files?
 // TODO: template via UI libary (`index.html.{ext}`)
 export function HTML(template: string, opts: Options = {}): Rollup.Plugin {
-	// TODO? Add `nomodule` option?
 	const { publicPath='/', preload=true, minify=true } = opts;
 
 	return {
