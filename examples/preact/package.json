@@ -8,10 +8,9 @@
   },
   "devDependencies": {
     "@babel/core": "7.11.6",
-    "@babel/preset-env": "7.11.5",
     "@babel/plugin-transform-react-jsx": "7.10.4",
+    "@freshie/plugin.babel": "workspace:*",
     "@freshie/ui.preact": "workspace:*",
-    "@rollup/plugin-babel": "5.2.1",
     "freshie": "workspace:*"
   }
 }
