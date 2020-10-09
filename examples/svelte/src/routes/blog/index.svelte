@@ -1,8 +1,13 @@
 <script context="module">
+	// export async function preload() {
+	// 	let res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
+	// 	let articles = await res.json();
+	// 	return { articles };
+	// }
+	import { send } from 'httpie';
 	export async function preload() {
-		let res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
-		let articles = await res.json();
-		return { articles };
+		let res = await send('GET', 'https://jsonplaceholder.typicode.com/posts');
+		return { articles: res.data };
 	}
 </script>
 

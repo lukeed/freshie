@@ -3,6 +3,9 @@
   "scripts": {
     "build": "freshie build"
   },
+  "dependencies": {
+    "httpie": "next"
+  },
   "devDependencies": {
     "@freshie/ssr.node": "workspace:*",
     "@freshie/ui.svelte": "workspace:*",

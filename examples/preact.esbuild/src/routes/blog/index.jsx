@@ -1,9 +1,15 @@
+import { send } from 'httpie';
 import { h, Fragment } from 'preact';
 
+// export async function preload() {
+// 	let res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
+// 	let articles = await res.json();
+// 	return { articles };
+// }
+
 export async function preload() {
-	let res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
-	let articles = await res.json();
-	return { articles };
+	let res = await send('GET', 'https://jsonplaceholder.typicode.com/posts');
+	return { articles: res.data };
 }
 
 export default function Blog(props) {
