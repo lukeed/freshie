@@ -41,7 +41,7 @@ export function setup() {
 
 // TODO: file server (sirv)
 export function start(options={}) {
-	const { decode, port, render, layout } = options;
+	const { decode, port, render } = options;
 	setup(); //=> attach app routes
 	return createServer(async (req, res) => {
 		let info, route, method=req.method;
@@ -72,8 +72,7 @@ export function start(options={}) {
 				});
 			}
 
-			let view = layout(route.views, props);
-			({ head, body } = await render(view));
+			({ head, body } = await render(route.views, props));
 		} catch (err) {
 			console.log(err); // TODO: remove
 			context.status = context.status || err.status || 500;

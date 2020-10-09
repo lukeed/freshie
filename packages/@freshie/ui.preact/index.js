@@ -19,7 +19,8 @@ export function layout(Tags, props={}) {
 
 import toHTML from 'preact-render-to-string';
 
-export function ssr(vnode) {
+export function ssr(Tags, props={}) {
+	let vnode = layout(Tags, props);
 	let body = toHTML(vnode) || '';
 	return { head: '', body };
 }
