@@ -182,6 +182,8 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
+	const template = join(dest, 'client', 'index.html');
+
 	return {
 		// NOTE: may detect & inject
 		input: join(src, 'index.ssr.js'),
@@ -196,6 +198,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 			tryCatchDeoptimization: false
 		},
 		plugins: [
+			Plugin.Template(template),
 			Plugin.Runtime(routes, false),
 			Plugin.Summary({ isDOM: false }),
 			require('@rollup/plugin-alias')(options.alias),

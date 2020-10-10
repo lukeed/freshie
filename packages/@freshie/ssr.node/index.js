@@ -1,6 +1,7 @@
 import parse from '@polka/url';
 import regexparam from 'regexparam';
 import { createServer } from 'http';
+import { HTML } from '!!~html~!!';
 
 const Tree = new Map;
 
@@ -78,11 +79,11 @@ export function start(options={}) {
 			context.status = context.status || err.status || 500;
 			body = `<p>${err.stack}</p>`; // TODO: options.error page
 		} finally {
-			// props.head=head; props.body=body;
 			res.writeHead(context.status || 200, context.headers);
-			// TODO: inject/write from user HTML template
-			res.end(`<html lang="en"><head>${head}</head><body>${body}</body></html>`);
-			// res.end(template.isHTML ? template(props) : await render([template], props));
+			// props.head=head; props.body=body;
+			// TODO: react to static HTML vs HTML component
+			let output = HTML.replace(/<\/body>/, body + '</body>');
+			res.end(head ? output.replace(/<\/head>/, head + '</head>') : output);
 		}
 	}).listen(port);
 }
