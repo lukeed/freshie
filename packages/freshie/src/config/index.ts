@@ -217,6 +217,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 				compact: isProd,
 				...options.json
 			}),
+			require('@rollup/plugin-commonjs')(options.commonjs),
 			minify && require('rollup-plugin-terser').terser(options.terser)
 		]
 	};
