@@ -1,3 +1,5 @@
+import sirv from 'sirv';
+import { join } from 'path';
 import parse from '@polka/url';
 import regexparam from 'regexparam';
 import { createServer } from 'http';
@@ -41,9 +43,16 @@ export function setup() {
 }
 
 // TODO: file server (sirv)
+// TODO: tie `sirv` existence to `options.ssr.*` thing
 export function start(options={}) {
 	const { decode, port, render } = options;
 	setup(); //=> attach app routes
+
+	const assets = true && sirv(
+		join(__dirname, '..', 'client'),
+		{ dev: true, single: true } // all from options.ssr?
+	);
+
 	return createServer(async (req, res) => {
 		let info, route, method=req.method;
 		if (method !== 'GET' && method !== 'HEAD') {
@@ -53,6 +62,7 @@ export function start(options={}) {
 
 		info = parse(req, decode);
 		route = find(info.pathname);
+		if (!route && assets) return assets(req, res);
 		if (!route) return (res.statusCode=404,res.end());
 
 		info.params = route.params;
