@@ -51,7 +51,9 @@ export function start(options) {
 
 	render = options.render;
 	hydrate = options.hydrate || render;
-	target = options.target || document.body;
+	// TODO: options.target
+	target = document.body;
+
 
 	// TODO: default 404 handler?
 	router = Router(options.base || '/');
