@@ -80,7 +80,8 @@ export function start(options={}) {
 		} finally {
 			// props.head=head; props.body=body;
 			res.writeHead(context.status || 200, context.headers);
-			res.end(JSON.stringify({ head, body })); // TODO: inject/write template
+			// TODO: inject/write from user HTML template
+			res.end(`<html lang="en"><head>${head}</head><body>${body}</body></html>`);
 			// res.end(template.isHTML ? template(props) : await render([template], props));
 		}
 	}).listen(port);
