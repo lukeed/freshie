@@ -128,6 +128,10 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		if (server) mutate(server, options, { ...context, ssr: true }); // TODO: should not be here
 	});
 
+	// Summaries must be last
+	client.plugins.push(Plugin.Summary({ isDOM: true }));
+	if (server) server.plugins.push(Plugin.Summary({ isDOM: false }));
+
 	return { options, client, server };
 }
 
@@ -155,7 +159,6 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 			Plugin.Router,
 			Plugin.Copy(options.copy),
 			Plugin.Runtime(routes, true),
-			Plugin.Summary({ isDOM: true }),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
@@ -200,7 +203,6 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 		plugins: [
 			Plugin.Template(template),
 			Plugin.Runtime(routes, false),
-			Plugin.Summary({ isDOM: false }),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
