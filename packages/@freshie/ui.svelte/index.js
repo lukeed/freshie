@@ -24,9 +24,9 @@ export function ssr(Tags, props={}) {
 		while (len-- > 1) {
 				let tmp = Tags[len];
 			// NOTE: you can ONLY use <slot/> in layouts
-				slots = { default: ($$p) => tmp.$$render($$out, $$p, $$bindings, slots) };
+				slots = { default: () => tmp.$$render($$out, $$props, $$bindings, slots) };
 		}
-			return Tags[0].$$render($$out, {}, {}, slots);
+			return Tags[0].$$render($$out, $$props, $$bindings, slots);
 		}).render(props);
 
 		body += ssr.html;
