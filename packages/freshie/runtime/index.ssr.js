@@ -49,7 +49,7 @@ async function reply(Tags, req, res) {
 		body = `<p>${err.stack}</p>`; // todo: customize
 	} finally {
 		props.head=head; props.body=body;
-		res.writeHead(context.status || 200, context.heaers);
+		res.writeHead(context.status || 200, context.headers);
 		res.end(template.isHTML ? template(props) : await render([template], props));
 	}
 }
