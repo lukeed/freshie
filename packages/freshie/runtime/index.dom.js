@@ -13,6 +13,8 @@ function toRequest(params) {
 	return { pathname, search, query, params };
 }
 
+// TODO: accept multiple layouts
+// TODO: attach manifest/files loader
 function define(pattern, importer) {
 	// let files = [];
 	let toFiles = Promise.resolve();
@@ -26,21 +28,31 @@ function define(pattern, importer) {
 
 	router.on(pattern, (params) => {
 		Promise.all([
-			importer(), //=> Component
+			importer(), //=> Components
 			toFiles, //=> Assets
 		]).then(arr => {
-			var req, m=arr[0], draw=hydrate||render;
+			var tags=arr[0], draw=hydrate||render;
+			var i=0, req, ctx, loaders=[], views=[];
 			params = params || {};
 			hydrate = false;
-			if (m.preload) {
+
+			for (; i < tags.length; i++) {
+				views.push(tags[i].default);
+				if (tags[i].preload) loaders.push(tags[i].preload);
+			}
+
+			if (loaders.length) {
+				ctx = { ssr: false };
 				req = toRequest(params);
-				m.preload(req).then(props => {
-					props = props || {};
-					props.params = params;
-					draw(m.default, props, target);
+				Promise.all(
+					loaders.map(f => f(req, ctx))
+				).then(list => {
+					var props = { params };
+					Object.assign(props, ...list);
+					draw(views, props, target);
 				});
 			} else {
-				draw(m.default, { params }, target);
+				draw(views, { params }, target);
 			}
 		});
 	});

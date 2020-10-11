@@ -8,20 +8,21 @@ async function xform(file: string, routes: Build.Route[], isDOM: boolean): Promi
 	const Layouts: Map<string, string> = new Map;
 	const fdata = await fs.read(file, 'utf8');
 
-	// TODO: multiple/nested layout files
+	// TODO: multiple layout nesting
 	routes.forEach((tmp, idx) => {
 		if (defines) defines += '\n\t';
 
-		let layout = tmp.layout && Layouts.get(tmp.layout);
-		if (tmp.layout && !layout) {
-			Layouts.set(tmp.layout, layout = `$Layout${count++}`);
-			imports += `import * as ${layout} from '${tmp.layout}';\n`;
-		}
-
 		if (isDOM) {
-			// TODO: client-side layout import + render
-			defines += `define('${tmp.pattern}', () => import('${tmp.file}'));`;
+			let views = [`import('${tmp.file}')`];
+			if (tmp.layout) views.unshift(`import('${tmp.layout}')`);
+			defines += `define('${tmp.pattern}', () => Promise.all([ ${views} ]));`;
 		} else {
+			let layout = tmp.layout && Layouts.get(tmp.layout);
+			if (tmp.layout && !layout) {
+				Layouts.set(tmp.layout, layout = `$Layout${count++}`);
+				imports += `import * as ${layout} from '${tmp.layout}';\n`;
+			}
+
 			let views = [`$Route${idx}`];
 			if (layout) views.unshift(layout);
 			imports += `import * as $Route${idx} from '${tmp.file}';\n`;
