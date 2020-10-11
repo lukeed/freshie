@@ -2,7 +2,7 @@
   "version": "0.0.0",
   "name": "@freshie/plugin.esbuild",
   "dependencies": {
-    "rollup-plugin-esbuild": "^2.5.0"
+    "rollup-plugin-esbuild": "^2.5.2"
   },
   "peerDependencies": {
     "esbuild": "^0.7.0",
