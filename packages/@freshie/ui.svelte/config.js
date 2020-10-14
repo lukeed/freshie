@@ -3,7 +3,7 @@ exports.svelte = {
 }
 
 // TODO: load CWD/svelte.config.js values
-exports.rollup = function (config, options, context) {
+exports.rollup = function (config, context, options) {
 	config.plugins.push(
 		require('rollup-plugin-svelte')({
 			css: context.ssr ? false : (css => css.write('index.css')),

@@ -8,7 +8,7 @@ exports.babel = function (config) {
 	config.plugins = toArray(config.plugins);
 }
 
-exports.rollup = function (config, options) {
+exports.rollup = function (config, context, options) {
 	config.plugins.push(
 		require('@rollup/plugin-babel').default(options.babel)
 	);

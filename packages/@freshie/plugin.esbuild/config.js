@@ -4,7 +4,7 @@ exports.esbuild = function (config) {
 	config.define = config.define || {};
 }
 
-exports.rollup = function (config, options, context) {
+exports.rollup = function (config, context, options) {
 	Object.assign(options.esbuild.define, options.replace);
 
 	config.plugins.push(

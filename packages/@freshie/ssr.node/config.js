@@ -6,7 +6,7 @@ exports.ssr = function (config) {
 	config.entry = join(__dirname, 'entry.js');
 }
 
-exports.rollup = function (config, options, context) {
+exports.rollup = function (config, context) {
 	if (!context.ssr) return;
 	config.output.format = 'cjs';
 	config.output.esModule = false;
