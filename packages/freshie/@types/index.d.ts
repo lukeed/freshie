@@ -28,7 +28,7 @@ declare namespace Config {
 	type Rollup = Rollup.Config;
 
 	interface Options extends Dict<any> {
-		publicPath: string;
+			publicPath: string;
 
 		alias: Subset<{
 			entries: Subset<{
@@ -103,7 +103,7 @@ declare namespace Config {
 	}
 
 	namespace Customize {
-		type Rollup = (config: Config.Rollup, options: Config.Options, context: Config.Context) => void;
+		type Rollup = (config: Config.Rollup, context: Config.Context, options: Config.Options) => void;
 		type Options = {
 			[K in keyof Config.Options]: (config: Config.Options[K], context: Config.Context) => void;
 		};

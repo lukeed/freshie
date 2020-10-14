@@ -7,8 +7,17 @@ import * as fs from '../utils/fs';
 import { defaults } from './options';
 import * as Plugin from './plugins';
 
+type ConfigData = Partial<Config.Customize.Options> & {
+	rollup?: Config.Customize.Rollup
+};
+
+interface ConfigPair {
+	options: Config.Options;
+	context: Config.Context;
+}
+
 // modified pwa/core util
-export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config.Customize.Options, context: Config.Context) {
+export function merge(old: Config.Options, nxt: ConfigData, context: Config.Context) {
 	for (let k in nxt) {
 		if (k === 'rollup') continue;
 		if (typeof nxt[k] === 'function') {
@@ -20,33 +29,11 @@ export function merge(old: Config.Options, nxt: Partial<Config.Options> | Config
 	}
 }
 
-// TODO: save `merge` functions and apply twice (ssr vs dom)
-export async function load(argv: Argv.Options): Promise<Config.Group> {
-	const { cwd, src, isProd, minify } = argv;
-
-	const file = utils.load<TODO>('freshie.config.js', cwd);
-
-	// planning to mutate
+function assemble(configs: ConfigData[], argv: Argv.Options, ssr = false): ConfigPair {
 	const options = klona(defaults);
-	const customize: Config.Customize.Rollup[] = [];
-	const context: Config.Context = { isProd, minify, ssr: false }; // TODO: ssr value
-
-	function autoload(name: string) {
-		log.info(`Applying ${ log.$pkg(name) } preset`);
-		let abs = utils.from(cwd, join(name, 'config.js'));
-		let tmp = require(abs); // allow potential throw
-		if (tmp.rollup) customize.push(tmp.rollup);
-		merge(options, tmp, context);
-	}
-
-	// auto-load @freshie packages
-	scoped.list(cwd).forEach(autoload);
-
-	if (file) {
-		log.info(`Applying "${ log.$dir('freshie.config.js') }" config`);
-		if (file.rollup) customize.push(file.rollup);
-		merge(options, file, context);
-	}
+	const { src, minify, isProd } = argv;
+	const context: Config.Context = { minify, isProd, ssr };
+	configs.forEach(tmp => merge(options, tmp, context));
 
 	const aliases = options.alias.entries;
 
@@ -60,8 +47,50 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		aliases[key] = resolve(src, tmp);
 	}
 
+	// resolve copy list (from src dir)
+	options.copy = options.copy.map(dir => resolve(src, dir));
+
+	// update *shared* replacements
+	options.replace.__DEV__ = String(!isProd);
+	options.replace['process.env.NODE_ENV'] = JSON.stringify(isProd ? 'production' : 'development');
+
+	return { options, context };
+}
+
+// TODO: save `merge` functions and apply twice (ssr vs dom)
+export async function load(argv: Argv.Options): Promise<Config.Group> {
+	const { cwd, src, isProd } = argv;
+
+	const file = utils.load<ConfigData>('freshie.config.js', cwd);
+
+	const configs: ConfigData[] = [];
+	const customize: Config.Customize.Rollup[] = [];
+	let DOM: ConfigPair, SSR: ConfigPair;
+
+	function autoload(name: string) {
+		log.info(`Applying ${ log.$pkg(name) } preset`);
+		let abs = utils.from(cwd, join(name, 'config.js'));
+		let { rollup, ...rest } = require(abs) as ConfigData;
+		if (rollup) customize.push(rollup);
+		configs.push(rest);
+	}
+
+	// auto-load @freshie packages
+	scoped.list(cwd).forEach(autoload);
+
+	if (file) {
+		log.info(`Applying "${ log.$dir('freshie.config.js') }" config`);
+		let { rollup, ...rest } = file;
+		if (rollup) customize.push(rollup);
+		configs.push(rest);
+	}
+
+	// build base/client options
+	DOM = assemble(configs, argv);
+	const { options } = DOM; //=> "base"
+
 	// find/parse "routes" directory
-	const routes = await utils.routes(argv.src, options.routes);
+	const routes = await utils.routes(src, options.routes);
 	if (!routes.length) throw new Error('No routes found!');
 
 	// auto-detect entries; set SSR fallback
@@ -84,48 +113,46 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	if (!entries.dom) throw new Error('Missing "DOM" entry file!');
 	if (!entries.html) throw new Error('Missing HTML template file!');
 
-	// resolve copy list (from src dir)
-	options.copy = options.copy.map(dir => {
-		return resolve(src, dir);
-	});
-
-	// update *shared* replacements
-	options.replace.__DEV__ = String(!isProd);
-	options.replace['process.env.NODE_ENV'] = JSON.stringify(isProd ? 'production' : 'development');
-
 	// build DOM configuration
-	const client = Client(argv, routes, options, context);
+	const client = Client(argv, routes, DOM.options, DOM.context);
 	client.plugins.unshift(Plugin.HTML(entries.html, options));
 	client.input = entries.dom; // inject entry point
 
-	let server: Nullable<Rollup.Config>;
+	let server: Rollup.Config;
 
 	// force node for dev
 	if (argv.ssr && !isProd) {
 		options.ssr.type = 'node';
 	} else if (argv.ssr && !options.ssr.type) {
 		autoload('@freshie/ssr.node');
-		entries.ssr = entries.ssr || options.ssr.entry;
+		argv.ssr = true; // forced
 	} else if (!argv.ssr) {
 		options.ssr.type = null; // --no-ssr
 	}
 
-	if (argv.ssr && options.ssr.type) {
+	if (argv.ssr) {
+		// build server options w/ context
+		SSR = assemble(configs, argv, true);
+
+		if (!SSR.options.ssr.type) {
+			SSR.options.ssr = options.ssr;
+		}
+
 		// Apply special SSR aliases
 		scoped.list(cwd).forEach(name => {
 			if (/[/]ui\./.test(name)) {
-				aliases['~!!ui!!~'] = utils.from(cwd, name);
+				SSR.options.alias.entries['~!!ui!!~'] = utils.from(cwd, name);
 			}
 		});
 
 		// Create SSR bundle config
-		server = Server(argv, routes, options, context);
-		server.input = entries.ssr; // inject entry point
+		server = Server(argv, routes, SSR.options, SSR.context);
+		server.input = entries.ssr || SSR.options.ssr.entry; // inject entry point
 	}
 
 	customize.forEach(mutate => {
-		mutate(client, options, context);
-		if (server) mutate(server, options, { ...context, ssr: true }); // TODO: should not be here
+		mutate(client, DOM.context, DOM.options);
+		if (server) mutate(server, SSR.context, SSR.options);
 	});
 
 	// Summaries must be last
