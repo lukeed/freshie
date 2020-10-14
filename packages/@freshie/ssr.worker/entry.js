@@ -1,9 +1,5 @@
-import * as App from 'freshie/server';
+import { ssr } from '~!!ui!!~'; // alias
+import * as App from './index';
 
-function define(pattern, ...Tags) {
-	App.render(pattern, Tags);
-}
-
-/* <ROUTES> */
-
-addEventListener('fetch', App.listen);
+const handler = App.setup({ render: ssr });
+addEventListener('fetch', handler);
