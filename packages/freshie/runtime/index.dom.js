@@ -90,8 +90,7 @@ export function start(options) {
 	target = document.body;
 
 
-	// TODO: default 404 handler?
-	router = Router(options.base || '/');
+	router = Router(options.base || '/', is404);
 	/* <ROUTES> */
 
 	// INIT
