@@ -14,7 +14,6 @@ sade('freshie')
 
 	.command('watch [src]')
 	.describe('Compile the Worker(s) within a directory.')
-	.option('-m, --minify', 'Minify built assets', true)
-	.action(commands.watch)
+	.alias('dev').action(commands.watch)
 
 	.parse(process.argv);
