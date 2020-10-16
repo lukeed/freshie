@@ -22,6 +22,12 @@ function define(route, ...Tags) {
 	Tree.set(pattern, { keys, loaders, views });
 }
 
+function toError(status, message='') {
+	const error = new Error(message);
+	error.status = status;
+	throw error;
+}
+
 function find(pathname) {
 	let rgx, data, match;
 	let j=0, arr, params={};
@@ -51,53 +57,55 @@ export function start(options={}) {
 
 	const assets = true && sirv(
 		join(__dirname, '..', 'client'),
-		{ dev: true, single: true } // all from options.ssr?
+		{ dev: __DEV__ } // all from options.ssr?
 	);
 
 	return createServer(async (req, res) => {
-		let info, route, method=req.method;
-		if (method !== 'GET' && method !== 'HEAD') {
-			// TODO: error page
-			res.statusCode = 405;
-			return res.end();
-		}
-
-		info = parse(req, decode);
-		route = find(info.pathname);
-		if (!route && assets) return assets(req, res); // TODO: error page 404
-		if (!route) return (res.statusCode=404,res.end()); // TODO: error page
-
-		info.params = route.params;
-		info.query = info.query || {};
-		info.headers = req.headers;
-
-		let props={ url: req.url }, head='', body='';
+		let props={ url: req.url }, page={};
+		let route, isAsset, request=parse(req, decode);
 		let context = { status: 0, ssr: true, dev: __DEV__ };
 		context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
+		request.query = request.query || {};
+		request.headers = req.headers;
+		request.params = {};
+
 		try {
+			if (req.method !== 'GET' && req.method !== 'HEAD') {
+				return toError(405);
+			}
+
+			route = find(request.pathname);
+			if (!route && !assets) return toError(404);
+			if (isAsset = !route) return assets(req, res, () => {
+				return (isAsset=false,toError(404));
+			});
+
+			request.params = route.params;
+
 			if (route.loaders.length > 0) {
 				await Promise.all(
-					route.loaders.map(p => p(info, context))
+					route.loaders.map(p => p(request, context))
 				).then(list => {
 					// TODO? deep merge props
 					Object.assign(props, ...list);
 				});
 			}
 
-			({ head, body } = await render(route.views, props));
+			page = await render(route.views, props);
 		} catch (err) {
-			let nxt = {};
 			context.error = err;
-			context.status = context.status || err.status || 500;
-			if (ErrorPage.preload) Object.assign(nxt, await ErrorPage.preload(info, context));
-			({ head, body } = await render([ErrorPage.default], nxt));
+			let next = { url: req.url };
+			context.status = context.status || err.statusCode || err.status || 500;
+			if (ErrorPage.preload) Object.assign(next, await ErrorPage.preload(request, context));
+			page = await render([ErrorPage.default], next);
 		} finally {
-			res.writeHead(context.status || 200, context.headers);
+			if (isAsset) return; // handled
 			// props.head=head; props.body=body;
-			// TODO: react to static HTML vs HTML component
-			let output = HTML.replace(/<\/body>/, body + '</body>');
-			res.end(head ? output.replace(/<\/head>/, head + '</head>') : output);
+			// TODO: static HTML vs HTML component file
+			res.writeHead(context.status || 200, context.headers);
+			let output = HTML.replace(/<\/body>/, page.body + '</body>');
+			res.end(page.head ? output.replace(/<\/head>/, page.head + '</head>') : output);
 		}
 	}).listen(port);
 }
