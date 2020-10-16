@@ -44,7 +44,7 @@ function run(Tags, params, ctx, req) {
 }
 
 function ErrorPage(params, ctx) {
-	import('~!!error!!~').then(m => {
+	import('!!~error~!!').then(m => {
 		run([m], params, ctx);
 	});
 }

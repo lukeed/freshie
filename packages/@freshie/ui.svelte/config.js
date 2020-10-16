@@ -5,7 +5,7 @@ exports.svelte = {
 }
 
 exports.alias = function (config) {
-	config.entries['~!!error!!~'] = join(__dirname, '_error.svelte');
+	config.entries['!!~error~!!'] = join(__dirname, '_error.svelte');
 }
 
 // TODO: load CWD/svelte.config.js values

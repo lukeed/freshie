@@ -141,7 +141,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		// Apply special SSR aliases
 		scoped.list(cwd).forEach(name => {
 			if (/[/]ui\./.test(name)) {
-				SSR.options.alias.entries['~!!ui!!~'] = utils.from(cwd, name);
+				SSR.options.alias.entries['!!~ui~!!'] = utils.from(cwd, name);
 			}
 		});
 

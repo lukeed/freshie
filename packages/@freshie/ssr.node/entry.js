@@ -1,4 +1,4 @@
-import { ssr } from '~!!ui!!~'; // alias
+import { ssr } from '!!~ui~!!'; // alias
 import { start } from './index';
 
 const { PORT=3000 } = process.env;
