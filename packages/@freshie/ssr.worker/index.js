@@ -95,35 +95,46 @@ export function find(method, pathname) {
 	}
 }
 
+function toError(status, message='') {
+	const error = new Error(message);
+	error.status = status;
+	throw error;
+}
+
 export async function run(event) {
 	const { request } = event;
 	const { url, method, headers } = request;
-	let { pathname, search, searchParams } = new URL(url);
-	if (decode) pathname = decodeURIComponent(pathname);
-
-	// TODO: error page
-	const route = find(method, pathname);
-	if (!route) return new Response('404', { status: 404 });
-
 	const isGET = /^(GET|HEAD)$/.test(method);
-	const query = Object.fromEntries(searchParams);
-	const req = { url, method, headers, params:route.params, path:pathname, query, search, body:null };
 
-	if (request.body) {
-		try {
-			const ctype = headers.get('content-type');
-			if (ctype) req.body = await toBody(request, ctype);
-		} catch (err) {
-			// TODO: error page
-			return new Response(err.message, { status: 400 });
-		}
-	}
-
-	let props={ url }, head='', body='';
+	let props={ url }, page={};
 	let context = { status: 0, ssr: true, dev: __DEV__ };
 	context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
 	try {
+		// TODO: detach if has custom
+		if (!isGET) return toError(405);
+
+		let { pathname, search, searchParams } = new URL(url);
+		if (decode) pathname = decodeURIComponent(pathname);
+
+		const query = search ? Object.fromEntries(searchParams) : {};
+		const req = { url, method, headers, params:{}, path:pathname, query, search, body:null };
+
+		const route = find(method, pathname);
+		if (!route) return toError(404);
+		req.params = route.params;
+
+		// TODO: only if has custom
+		if (false && request.body) {
+			try {
+				const ctype = headers.get('content-type');
+				if (ctype) req.body = await toBody(request, ctype);
+			} catch (err) {
+				err.status = 400;
+				throw err;
+			}
+		}
+
 		if (route.loaders.length > 0) {
 			await Promise.all(
 				route.loaders.map(p => p(req, context))
@@ -133,18 +144,18 @@ export async function run(event) {
 			});
 		}
 
-		({ head, body } = await render(route.views, props));
+		page = await render(route.views, props);
 	} catch (err) {
-		let nxt = {};
+		let next = { url };
 		context.error = err;
-		context.status = context.status || err.status || 500;
-		if (ErrorPage.preload) Object.assign(nxt, await ErrorPage.preload(info, context));
-		({ head, body } = await render([ErrorPage.default], nxt));
+		context.status = context.status || err.statusCode || err.status || 500;
+		if (ErrorPage.preload) Object.assign(next, await ErrorPage.preload(request, context));
+		page = await render([ErrorPage.default], next);
 	} finally {
 		// props.head=head; props.body=body;
-		// TODO: react to static HTML vs HTML component
-		let output = HTML.replace(/<\/body>/, body + '</body>');
-		if (head) output = output.replace(/<\/head>/, head + '</head>');
+		// TODO: static HTML vs HTML component file
+		let output = HTML.replace(/<\/body>/, page.body + '</body>');
+		if (page.head) output = output.replace(/<\/head>/, page.head + '</head>');
 
 		const res = new Response(output, {
 			status: context.status || 200,
