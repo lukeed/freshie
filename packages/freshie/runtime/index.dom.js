@@ -23,7 +23,6 @@ function run(Tags, params, ctx, req) {
 	var draw = hydrate || render;
 	var i=0, loaders=[], views=[];
 	var props = { params };
-	hydrate = false;
 
 	for (; i < Tags.length; i++) {
 		views.push(Tags[i].default);
@@ -37,12 +36,14 @@ function run(Tags, params, ctx, req) {
 		).then(list => {
 			Object.assign(props, ...list);
 			draw(views, props, target);
+			hydrate = false;
 		}).catch(err => {
 			ctx.error = err;
 			ErrorPage(params, ctx);
 		});
 	} else {
 		draw(views, props, target);
+		hydrate = false;
 	}
 }
 
