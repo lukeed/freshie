@@ -101,6 +101,7 @@ export async function run(event) {
 	let { pathname, search, searchParams } = new URL(url);
 	if (decode) pathname = decodeURIComponent(pathname);
 
+	// TODO: error page
 	const route = find(method, pathname);
 	if (!route) return new Response('404', { status: 404 });
 
@@ -113,6 +114,7 @@ export async function run(event) {
 			const ctype = headers.get('content-type');
 			if (ctype) req.body = await toBody(request, ctype);
 		} catch (err) {
+			// TODO: error page
 			return new Response(err.message, { status: 400 });
 		}
 	}

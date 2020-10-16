@@ -57,14 +57,15 @@ export function start(options={}) {
 	return createServer(async (req, res) => {
 		let info, route, method=req.method;
 		if (method !== 'GET' && method !== 'HEAD') {
+			// TODO: error page
 			res.statusCode = 405;
 			return res.end();
 		}
 
 		info = parse(req, decode);
 		route = find(info.pathname);
-		if (!route && assets) return assets(req, res);
-		if (!route) return (res.statusCode=404,res.end());
+		if (!route && assets) return assets(req, res); // TODO: error page 404
+		if (!route) return (res.statusCode=404,res.end()); // TODO: error page
 
 		info.params = route.params;
 		info.query = info.query || {};
