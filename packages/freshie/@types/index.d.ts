@@ -130,6 +130,13 @@ declare namespace Runtime {
 		query: Dict<string>;
 	}
 
+	interface Context {
+		ssr: boolean;
+		status: number;
+		error?: Error;
+		dev: boolean;
+	}
+
 	interface Options {
 		basePath: string;
 		render<C extends Function, P extends Dict<any>>(Component: C, props: P): void;

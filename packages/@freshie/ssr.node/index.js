@@ -3,6 +3,7 @@ import { join } from 'path';
 import parse from '@polka/url';
 import regexparam from 'regexparam';
 import { createServer } from 'http';
+import * as ErrorPage from '!!~error~!!';
 import { HTML } from '!!~html~!!';
 
 const Tree = new Map;
@@ -69,8 +70,8 @@ export function start(options={}) {
 		info.query = info.query || {};
 		info.headers = req.headers;
 
-		let props = { url: req.url };
-		let head='', body='', context={ status: 0, ssr: true };
+		let props={ url: req.url }, head='', body='';
+		let context = { status: 0, ssr: true, dev: __DEV__ };
 		context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
 		try {
@@ -85,9 +86,11 @@ export function start(options={}) {
 
 			({ head, body } = await render(route.views, props));
 		} catch (err) {
-			console.log(err); // TODO: remove
+			let nxt = {};
+			context.error = err;
 			context.status = context.status || err.status || 500;
-			body = `<p>${err.stack}</p>`; // TODO: options.error page
+			if (ErrorPage.preload) Object.assign(nxt, await ErrorPage.preload(info, context));
+			({ head, body } = await render([ErrorPage.default], nxt));
 		} finally {
 			res.writeHead(context.status || 200, context.headers);
 			// props.head=head; props.body=body;

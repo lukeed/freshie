@@ -1,4 +1,5 @@
 import regexparam from 'regexparam';
+import * as ErrorPage from '!!~error~!!';
 import { HTML } from '!!~html~!!';
 
 export const TREE = {};
@@ -117,7 +118,7 @@ export async function run(event) {
 	}
 
 	let props={ url }, head='', body='';
-	let context = { status: 0, ssr: true };
+	let context = { status: 0, ssr: true, dev: __DEV__ };
 	context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
 	try {
@@ -132,9 +133,11 @@ export async function run(event) {
 
 		({ head, body } = await render(route.views, props));
 	} catch (err) {
-		console.log(err); // TODO: remove
+		let nxt = {};
+		context.error = err;
 		context.status = context.status || err.status || 500;
-		body = `<p>${err.stack}</p>`; // TODO: options.error page
+		if (ErrorPage.preload) Object.assign(nxt, await ErrorPage.preload(info, context));
+		({ head, body } = await render([ErrorPage.default], nxt));
 	} finally {
 		// props.head=head; props.body=body;
 		// TODO: react to static HTML vs HTML component
