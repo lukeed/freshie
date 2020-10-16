@@ -65,12 +65,13 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 
 	const configs: ConfigData[] = [];
 	const customize: Config.Customize.Rollup[] = [];
-	let DOM: ConfigPair, SSR: ConfigPair;
+	let DOM: ConfigPair, SSR: ConfigPair, uikit: string;
 
 	function autoload(name: string) {
 		log.info(`Applying ${ log.$pkg(name) } preset`);
 		let abs = utils.from(cwd, join(name, 'config.js'));
 		let { rollup, ...rest } = require(abs) as ConfigData;
+		if (/[/]ui\./.test(name)) uikit = uikit || name;
 		if (rollup) customize.push(rollup);
 		configs.push(rest);
 	}
@@ -138,12 +139,9 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 			SSR.options.ssr = options.ssr;
 		}
 
-		// Apply special SSR aliases
-		scoped.list(cwd).forEach(name => {
-			if (/[/]ui\./.test(name)) {
-				SSR.options.alias.entries['!!~ui~!!'] = utils.from(cwd, name);
-			}
-		});
+		if (uikit) {
+			SSR.options.alias.entries['!!~ui~!!'] = utils.from(cwd, uikit);
+		} // else error?
 
 		// Create SSR bundle config
 		server = Server(argv, routes, SSR.options, SSR.context);
