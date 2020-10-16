@@ -37,6 +37,9 @@ function run(Tags, params, ctx, req) {
 		).then(list => {
 			Object.assign(props, ...list);
 			draw(views, props, target);
+		}).catch(err => {
+			ctx.error = err;
+			ErrorPage(params, ctx);
 		});
 	} else {
 		draw(views, props, target);
