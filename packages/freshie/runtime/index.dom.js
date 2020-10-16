@@ -6,11 +6,47 @@ var target, render, hydrate;
 // var hasSW = ('serviceWorker' in navigator);
 // var root = document.body;
 
-function toRequest(params) {
+function request(params) {
 	var { pathname, search } = location;
 	var USP = new URLSearchParams(search);
 	var query = Object.fromEntries(USP);
 	return { pathname, search, query, params };
+}
+
+function context(extra) {
+	return { ...extra, ssr: false, dev: __DEV__ };
+}
+
+function run(Tags, params, ctx, req) {
+	params = params || {};
+	ctx = ctx || context();
+	var draw = hydrate || render;
+	var i=0, loaders=[], views=[];
+	var props = { params };
+	hydrate = false;
+
+	for (; i < Tags.length; i++) {
+		views.push(Tags[i].default);
+		if (Tags[i].preload) loaders.push(Tags[i].preload);
+	}
+
+	if (loaders.length) {
+		req = req || request(params);
+		Promise.all(
+			loaders.map(f => f(req, ctx))
+		).then(list => {
+			Object.assign(props, ...list);
+			draw(views, props, target);
+		});
+	} else {
+		draw(views, props, target);
+	}
+}
+
+function ErrorPage(params, ctx) {
+	import('~!!error!!~').then(m => {
+		run([m], params, ctx);
+	});
 }
 
 // TODO: accept multiple layouts
@@ -27,35 +63,22 @@ function define(pattern, importer) {
 	// }
 
 	router.on(pattern, (params) => {
+		var ctx = context();
+
 		Promise.all([
 			importer(), //=> Components
 			toFiles, //=> Assets
 		]).then(arr => {
-			var tags=arr[0], draw=hydrate||render;
-			var i=0, req, ctx, loaders=[], views=[];
-			params = params || {};
-			hydrate = false;
-
-			for (; i < tags.length; i++) {
-				views.push(tags[i].default);
-				if (tags[i].preload) loaders.push(tags[i].preload);
-			}
-
-			if (loaders.length) {
-				ctx = { ssr: false };
-				req = toRequest(params);
-				Promise.all(
-					loaders.map(f => f(req, ctx))
-				).then(list => {
-					var props = { params };
-					Object.assign(props, ...list);
-					draw(views, props, target);
-				});
-			} else {
-				draw(views, { params }, target);
-			}
-		});
+			run(arr[0], params, ctx);
+		}).catch(err => {
+			ctx.error = err;
+			ErrorPage(params, ctx);
+		})
 	});
+}
+
+function is404(url) {
+	ErrorPage({ url }, { status: 404 });
 }
 
 export function start(options) {
