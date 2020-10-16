@@ -48,6 +48,8 @@ function run(Tags, params, ctx, req) {
 
 function ErrorPage(params, ctx) {
 	import('!!~error~!!').then(m => {
+		var err = ctx.error || {};
+		ctx.status = ctx.status || err.statusCode || err.status || 500;
 		run([m], params, ctx);
 	});
 }
