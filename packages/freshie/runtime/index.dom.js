@@ -78,7 +78,8 @@ function define(pattern, importer) {
 }
 
 function is404(url) {
-	ErrorPage({ url }, { status: 404 });
+	var ctx = context({ status: 404 });
+	ErrorPage({ url }, ctx);
 }
 
 export function start(options) {
