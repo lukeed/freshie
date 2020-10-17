@@ -94,6 +94,15 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	const routes = await utils.routes(src, options.templates);
 	if (!routes.length) throw new Error('No routes found!');
 
+	// find/parse "errors" directory
+	// TODO: global default, regardless of uikit?
+	const errors = await utils.errors(src, options.templates);
+	if (uikit && !errors.find(x => x.key === 'xxx')) errors.push({
+		file: options.alias.entries['!!~error~!!'],
+		layout: null,
+		key: 'xxx',
+	});
+
 	// auto-detect entries; set SSR fallback
 	const entries = await fs.list(src).then(files => {
 		// dom: index.{ext} || index.dom.{ext}
@@ -115,7 +124,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	if (!entries.html) throw new Error('Missing HTML template file!');
 
 	// build DOM configuration
-	const client = Client(argv, routes, DOM.options, DOM.context);
+	const client = Client(argv, routes, errors, DOM.options, DOM.context);
 	client.plugins.unshift(Plugin.HTML(entries.html, options));
 	client.input = entries.dom; // inject entry point
 
@@ -144,7 +153,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		} // else error?
 
 		// Create SSR bundle config
-		server = Server(argv, routes, SSR.options, SSR.context);
+		server = Server(argv, routes, errors, SSR.options, SSR.context);
 		server.input = entries.ssr || SSR.options.ssr.entry; // inject entry point
 	}
 
@@ -160,7 +169,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	return { options, client, server };
 }
 
-export function Client(argv: Argv.Options, routes: Build.Route[], options: Config.Options, context: Config.Context): Rollup.Config {
+export function Client(argv: Argv.Options, routes: Build.Route[], errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
@@ -183,7 +192,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 		plugins: [
 			Plugin.Router,
 			Plugin.Copy(options.copy),
-			Plugin.Runtime(routes, true),
+			Plugin.Runtime(routes, errors, true),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
@@ -206,7 +215,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], options: Confi
 	};
 }
 
-export function Server(argv: Argv.Options, routes: Build.Route[], options: Config.Options, context: Config.Context): Rollup.Config {
+export function Server(argv: Argv.Options, routes: Build.Route[], errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, dest, minify } = argv;
 	const { isProd } = context;
 
@@ -227,7 +236,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], options: Confi
 		},
 		plugins: [
 			Plugin.Template(template),
-			Plugin.Runtime(routes, false),
+			Plugin.Runtime(routes, errors, false),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({

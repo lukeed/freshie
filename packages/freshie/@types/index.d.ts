@@ -119,6 +119,12 @@ declare namespace Build {
 		layout: Nullable<string>;
 		wild: Nullable<string>;
 	}
+
+	interface Error {
+		key: string;
+		file: string;
+		layout: Nullable<string>;
+	}
 }
 
 declare namespace Runtime {

@@ -56,15 +56,13 @@ export async function collect(src: string, options: Config.Options['templates'])
 	const routes = join(src, options.routes);
 	if (!exists(routes)) return [];
 
-	// TODO: configure extension
-	const EXTN = options.test;
-	const LAYOUT = options.layout;
+	const { test, layout } = options;
 	const PAGES = new Map<string, Build.Route>();
 
-	const isLayout = (str: string) => LAYOUT.test(str) && EXTN.test(str);
+	const isLayout = (str: string) => layout.test(str) && test.test(str);
 
 	await totalist(routes, async (base, absolute) => {
-		if (/^[._]/.test(base) || !EXTN.test(base)) return;
+		if (/^[._]/.test(base) || !test.test(base)) return;
 		const rel = relative(routes, absolute);
 
 		const info: Build.Route = {
@@ -73,7 +71,7 @@ export async function collect(src: string, options: Config.Options['templates'])
 			layout: null,
 		};
 
-		// scale upwards to find closest `_layout.svelte` file
+		// scale upwards to find closest layout file
 		await escalade(absolute, (dirname, contents) => {
 			let tmp = contents.find(isLayout);
 			if (tmp) return info.layout = join(dirname, tmp);

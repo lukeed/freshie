@@ -2,6 +2,7 @@ import Router from 'freshie/router';
 
 export var router;
 var target, render, hydrate;
+var ERRORS = { /* <ERRORS> */ };
 
 // var hasSW = ('serviceWorker' in navigator);
 // var root = document.body;
@@ -47,12 +48,15 @@ function run(Tags, params, ctx, req) {
 	}
 }
 
+function toError(code) {
+	var key = String(code);
+	return ERRORS[key] || ERRORS[key[0] + 'xx'] || ERRORS['xxx'];
+}
+
 function ErrorPage(params, ctx) {
-	import('!!~error~!!').then(m => {
-		var err = ctx.error || {};
-		ctx.status = ctx.status || err.statusCode || err.status || 500;
-		run([m], params, ctx);
-	});
+	var err = ctx.error || {};
+	ctx.status = ctx.status || err.statusCode || err.status || 500;
+	toError(ctx.status)().then(arr => run(arr, params, ctx));
 }
 
 // TODO: accept multiple layouts
@@ -95,7 +99,6 @@ export function start(options) {
 	hydrate = options.hydrate || render;
 	// TODO: options.target
 	target = document.body;
-
 
 	router = Router(options.base || '/', is404);
 	/* <ROUTES> */

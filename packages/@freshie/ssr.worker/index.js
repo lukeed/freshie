@@ -1,9 +1,9 @@
 import regexparam from 'regexparam';
-import * as ErrorPage from '!!~error~!!';
 import { HTML } from '!!~html~!!';
 
 export const TREE = {};
 export const Cache = caches.default;
+const ERRORS = { /* <ERRORS> */ };
 
 var render, decode=true;
 export function setup(options={}) {
@@ -17,16 +17,19 @@ export function setup(options={}) {
 	}
 }
 
-// NOTE: ideally `layout` here
-export function define(route, ...Tags) {
+function prepare(Tags) {
 	let i=0, tmp, loaders=[], views=[];
-
 	for (; i < Tags.length; i++) {
 		tmp = Tags[i];
 		views.push(tmp.default);
 		if (tmp.preload) loaders.push(tmp.preload);
 	}
+	return { loaders, views };
+}
 
+// NOTE: ideally `layout` here
+export function define(route, ...Tags) {
+	let { views, loaders } = prepare(Tags);
 	add('GET', route, views, loaders);
 }
 
@@ -101,28 +104,40 @@ function toError(status, message='') {
 	throw error;
 }
 
+async function draw(req, route, context) {
+	let props = { url: req.url };
+
+	if (route.loaders.length > 0) {
+		await Promise.all(
+			route.loaders.map(p => p(req, context))
+		).then(list => {
+			// TODO? deep merge props
+			Object.assign(props, ...list);
+		});
+	}
+
+	return render(route.views, props);
+}
+
 export async function run(event) {
 	const { request } = event;
 	const { url, method, headers } = request;
-	const isGET = /^(GET|HEAD)$/.test(method);
 
-	let props={ url }, page={};
-	let context = { status: 0, ssr: true, dev: __DEV__ };
+	const isGET = /^(GET|HEAD)$/.test(method);
+	const { pathname, search, searchParams } = new URL(url);
+	const query = search ? Object.fromEntries(searchParams) : {};
+	const path = decode ? decodeURIComponent(pathname) : pathname;
+	const req = { url, method, headers, path, query, search, params:{}, body:null };
+
+	let page={}, context = { status: 0, ssr: true, dev: __DEV__ };
 	context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
 	try {
 		// TODO: detach if has custom
 		if (!isGET) return toError(405);
 
-		let { pathname, search, searchParams } = new URL(url);
-		if (decode) pathname = decodeURIComponent(pathname);
-
-		const query = search ? Object.fromEntries(searchParams) : {};
-		const req = { url, method, headers, params:{}, path:pathname, query, search, body:null };
-
-		const route = find(method, pathname);
+		const route = find(method, path);
 		if (!route) return toError(404);
-		req.params = route.params;
 
 		// TODO: only if has custom
 		if (false && request.body) {
@@ -135,22 +150,15 @@ export async function run(event) {
 			}
 		}
 
-		if (route.loaders.length > 0) {
-			await Promise.all(
-				route.loaders.map(p => p(req, context))
-			).then(list => {
-				// TODO? deep merge props
-				Object.assign(props, ...list);
-			});
-		}
-
-		page = await render(route.views, props);
+		req.params = route.params;
+		page = await draw(req, route, context);
 	} catch (err) {
-		let next = { url };
 		context.error = err;
 		context.status = context.status || err.statusCode || err.status || 500;
-		if (ErrorPage.preload) Object.assign(next, await ErrorPage.preload(request, context));
-		page = await render([ErrorPage.default], next);
+		// look up error by specificity
+		const key = String(context.status);
+		const route = ERRORS[key] || ERRORS[key[0] + 'xx'] || ERRORS['xxx']
+		page = await draw(req, route, context);
 	} finally {
 		// props.head=head; props.body=body;
 		// TODO: static HTML vs HTML component file

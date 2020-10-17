@@ -3,23 +3,26 @@ import { join } from 'path';
 import parse from '@polka/url';
 import regexparam from 'regexparam';
 import { createServer } from 'http';
-import * as ErrorPage from '!!~error~!!';
 import { HTML } from '!!~html~!!';
 
 const Tree = new Map;
+const ERRORS = { /* <ERRORS> */ };
 
-// NOTE: ideally `layout` here
-function define(route, ...Tags) {
+function prepare(Tags, extra={}) {
 	let i=0, tmp, loaders=[], views=[];
-	let { keys, pattern } = regexparam(route);
-
 	for (; i < Tags.length; i++) {
 		tmp = Tags[i];
 		views.push(tmp.default);
 		if (tmp.preload) loaders.push(tmp.preload);
 	}
+	return { ...extra, loaders, views };
+}
 
-	Tree.set(pattern, { keys, loaders, views });
+// NOTE: ideally `layout` here
+function define(route, ...Tags) {
+	let { keys, pattern } = regexparam(route);
+	let entry = prepare(Tags, { keys });
+	Tree.set(pattern, entry);
 }
 
 function toError(status, message='') {
@@ -60,10 +63,25 @@ export function start(options={}) {
 		{ dev: __DEV__ } // all from options.ssr?
 	);
 
+	// TODO: req.url vs req.href disparity
+	async function draw(req, route, context) {
+		let props = { url: req.href };
+
+		if (route.loaders.length > 0) {
+			await Promise.all(
+				route.loaders.map(p => p(req, context))
+			).then(list => {
+				// TODO? deep merge props
+				Object.assign(props, ...list);
+			});
+		}
+
+		return render(route.views, props);
+	}
+
 	return createServer(async (req, res) => {
-		let props={ url: req.url }, page={};
-		let route, isAsset, request=parse(req, decode);
 		let context = { status: 0, ssr: true, dev: __DEV__ };
+		let page={}, route, isAsset, request=parse(req, decode);
 		context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
 		request.query = request.query || {};
@@ -82,23 +100,14 @@ export function start(options={}) {
 			});
 
 			request.params = route.params;
-
-			if (route.loaders.length > 0) {
-				await Promise.all(
-					route.loaders.map(p => p(request, context))
-				).then(list => {
-					// TODO? deep merge props
-					Object.assign(props, ...list);
-				});
-			}
-
-			page = await render(route.views, props);
+			page = await draw(request, route, context);
 		} catch (err) {
 			context.error = err;
-			let next = { url: req.url };
 			context.status = context.status || err.statusCode || err.status || 500;
-			if (ErrorPage.preload) Object.assign(next, await ErrorPage.preload(request, context));
-			page = await render([ErrorPage.default], next);
+			// look up error by specificity
+			const key = String(context.status);
+			const route = ERRORS[key] || ERRORS[key[0] + 'xx'] || ERRORS['xxx']
+			page = await draw(request, route, context);
 		} finally {
 			if (isAsset) return; // handled
 			// props.head=head; props.body=body;
