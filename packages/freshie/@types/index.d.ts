@@ -28,7 +28,7 @@ declare namespace Config {
 	type Rollup = Rollup.Config;
 
 	interface Options extends Dict<any> {
-			publicPath: string;
+		publicPath: string;
 
 		alias: Subset<{
 			entries: Subset<{
@@ -42,9 +42,7 @@ declare namespace Config {
 
 		ssr: {
 			type: 'node' | 'worker' | 'lambda';
-			entry: Nullable<string>; // path to entry
-			// render: string; // path to renderer
-			// render<T>(): Promisable<T>;
+			entry: Nullable<string>; // default entry
 			// bucket?: string;
 		};
 
@@ -140,6 +138,7 @@ declare namespace Runtime {
 	interface Context {
 		ssr: boolean;
 		status: number;
+		redirect?: string;
 		error?: Error;
 		dev: boolean;
 	}

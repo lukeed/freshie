@@ -1,5 +1,6 @@
 import sirv from 'sirv';
 import { join } from 'path';
+import { resolve } from 'url';
 import parse from '@polka/url';
 import regexparam from 'regexparam';
 import { createServer } from 'http';
@@ -110,6 +111,10 @@ export function start(options={}) {
 			page = await draw(request, route, context);
 		} finally {
 			if (isAsset) return; // handled
+			if (context.redirect) {
+				context.headers.location = resolve(request.href, context.redirect);
+				context.status = (context.status > 300 && context.status < 400) ? context.status : 302;
+			}
 			// props.head=head; props.body=body;
 			// TODO: static HTML vs HTML component file
 			res.writeHead(context.status || 200, context.headers);

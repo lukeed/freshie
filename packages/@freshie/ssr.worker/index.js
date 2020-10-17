@@ -160,6 +160,13 @@ export async function run(event) {
 		const route = ERRORS[key] || ERRORS[key[0] + 'xx'] || ERRORS['xxx']
 		page = await draw(req, route, context);
 	} finally {
+		if (context.redirect) {
+			let { status, redirect } = context;
+			const { href } = new URL(redirect, url);
+			if (status <= 300 || status >= 400) status = 302;
+			return Response.redirect(href, status);
+		}
+
 		// props.head=head; props.body=body;
 		// TODO: static HTML vs HTML component file
 		let output = HTML.replace(/<\/body>/, page.body + '</body>');

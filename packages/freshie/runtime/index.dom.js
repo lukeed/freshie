@@ -35,9 +35,19 @@ function run(Tags, params, ctx, req) {
 		Promise.all(
 			loaders.map(f => f(req, ctx))
 		).then(list => {
-			Object.assign(props, ...list);
-			draw(views, props, target);
-			hydrate = false;
+			if (ctx.redirect) {
+				// TODO? Could `new URL` and origin match
+				// but wouldn't guarantee same `base` path
+				if (/^(https?:)?\/\//.test(ctx.redirect)) {
+					location.href = ctx.redirect; // meh
+				} else {
+					router.route(ctx.redirect, true);
+				}
+			} else {
+				Object.assign(props, ...list);
+				draw(views, props, target);
+				hydrate = false;
+			}
 		}).catch(err => {
 			ctx.error = err;
 			ErrorPage(params, ctx);
