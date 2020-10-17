@@ -1,3 +1,7 @@
+exports.templates = function (config) {
+	config.test = /\.[tj]sx?$/;
+}
+
 exports.babel = function (config) {
 	config.plugins = config.plugins || [];
 

@@ -1,11 +1,15 @@
 const { join } = require('path');
 
-exports.svelte = {
-	hydratable: true,
-}
-
 exports.alias = function (config) {
 	config.entries['!!~error~!!'] = join(__dirname, '_error.svelte');
+}
+
+exports.templates = function (config) {
+	config.test = /\.svelte$/;
+}
+
+exports.svelte = {
+	hydratable: true,
 }
 
 // TODO: load CWD/svelte.config.js values
