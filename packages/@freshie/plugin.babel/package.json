@@ -7,5 +7,8 @@
   "peerDependencies": {
     "@babel/core": "^7.0.0",
     "freshie": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

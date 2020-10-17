@@ -8,5 +8,8 @@
   },
   "peerDependencies": {
     "freshie": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

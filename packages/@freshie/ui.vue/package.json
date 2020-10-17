@@ -4,5 +4,8 @@
   "peerDependencies": {
     "freshie": "workspace:*",
     "vue": "^2.6.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

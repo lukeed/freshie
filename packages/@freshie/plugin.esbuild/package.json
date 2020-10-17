@@ -7,5 +7,8 @@
   "peerDependencies": {
     "esbuild": "^0.7.0",
     "freshie": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
