@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "freshie build"
+    "build": "freshie build",
+    "watch": "freshie watch"
   },
   "dependencies": {
     "httpie": "next"
