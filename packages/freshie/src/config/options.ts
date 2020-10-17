@@ -17,10 +17,11 @@ export const defaults: Config.Options = {
 		entry: null,
 	},
 
-	routes: {
-		dir: 'routes',
-		test: /\.([tj]sx?|svelte|vue)$/,
+	templates: {
+		routes: 'routes',
 		layout: /^_layout/,
+		test: /\.([tj]sx?|svelte|vue)$/,
+		errors: 'errors',
 	},
 
 	assets: {

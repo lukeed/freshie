@@ -39,7 +39,7 @@ function assemble(configs: ConfigData[], argv: Argv.Options, ssr = false): Confi
 
 	// update special aliases
 	aliases['~assets'] = options.assets.dir;
-	aliases['~routes'] = options.routes.dir;
+	aliases['~routes'] = options.templates.routes;
 
 	// resolve aliases
 	for (let key in aliases) {
@@ -91,7 +91,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	const { options } = DOM; //=> "base"
 
 	// find/parse "routes" directory
-	const routes = await utils.routes(src, options.routes);
+	const routes = await utils.routes(src, options.templates);
 	if (!routes.length) throw new Error('No routes found!');
 
 	// auto-detect entries; set SSR fallback

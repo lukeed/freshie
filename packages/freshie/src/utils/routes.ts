@@ -50,10 +50,10 @@ export function to_pattern(rel: string) {
 /**
  * Find all Pages/Routes
  * @param src The "/src" directory path
- * @param options The "routes" config options
+ * @param options The "templates" config options
  */
-export async function collect(src: string, options: Config.Options['routes']): Promise<Build.Route[]> {
-	const routes = join(src, options.dir);
+export async function collect(src: string, options: Config.Options['templates']): Promise<Build.Route[]> {
+	const routes = join(src, options.routes);
 	if (!exists(routes)) return [];
 
 	// TODO: configure extension

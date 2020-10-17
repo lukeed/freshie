@@ -48,9 +48,10 @@ declare namespace Config {
 			// bucket?: string;
 		};
 
-		routes: {
-			dir: string;
+		templates: {
 			test: RegExp;
+			routes: string;
+			errors: string;
 			layout: RegExp;
 		};
 

@@ -4,18 +4,18 @@ import * as fs from '../../utils/fs';
 const RUNTIME = join(__dirname, '..', 'runtime', 'index.dom.js');
 
 async function xform(file: string, routes: Build.Route[], isDOM: boolean): Promise<string> {
-	let count=0, imports='', defines='';
+	let count=0, imports='', $routes='';
 	const Layouts: Map<string, string> = new Map;
 	const fdata = await fs.read(file, 'utf8');
 
 	// TODO: multiple layout nesting
 	routes.forEach((tmp, idx) => {
-		if (defines) defines += '\n\t';
+		if ($routes) $routes += '\n\t';
 
 		if (isDOM) {
 			let views = [`import('${tmp.file}')`];
 			if (tmp.layout) views.unshift(`import('${tmp.layout}')`);
-			defines += `define('${tmp.pattern}', () => Promise.all([ ${views} ]));`;
+			$routes += `define('${tmp.pattern}', () => Promise.all([ ${views} ]));`;
 		} else {
 			let layout = tmp.layout && Layouts.get(tmp.layout);
 			if (tmp.layout && !layout) {
@@ -26,12 +26,12 @@ async function xform(file: string, routes: Build.Route[], isDOM: boolean): Promi
 			let views = [`$Route${idx}`];
 			if (layout) views.unshift(layout);
 			imports += `import * as $Route${idx} from '${tmp.file}';\n`;
-			defines += `define('${tmp.pattern}', ${views});`;
+			$routes += `define('${tmp.pattern}', ${views});`;
 		}
 	});
 
 	if (imports) imports += '\n';
-	return imports + fdata.replace('/* <ROUTES> */', defines);
+	return imports + fdata.replace('/* <ROUTES> */', $routes);
 }
 
 export function Runtime(routes: Build.Route[], isDOM: boolean): Rollup.Plugin {
