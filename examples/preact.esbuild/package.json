@@ -4,7 +4,6 @@
     "build": "freshie build"
   },
   "dependencies": {
-    "httpie": "next",
     "preact": "10.4.8"
   },
   "devDependencies": {

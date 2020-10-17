@@ -12,13 +12,18 @@
     "./router": {
       "import": "./router/index.mjs",
       "require": "./router/index.js"
+    },
+    "./http": {
+      "import": "./http/index.mjs",
+      "require": "./http/index.js"
     }
   },
   "files": [
     "*.js",
     "build",
     "runtime",
-    "router"
+    "router",
+    "http"
   ],
   "dependencies": {
     "@freshie/ssr.node": "workspace:*",
@@ -28,6 +33,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-replace": "^2.3.0",
     "escalade": "^3.1.0",
+    "httpie": "^2.0.0-next.11",
     "kleur": "^4.1.0",
     "klona": "^2.0.0",
     "navaid": "^1.2.0",

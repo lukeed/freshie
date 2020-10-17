@@ -4,9 +4,10 @@
 	// 	let articles = await res.json();
 	// 	return { articles };
 	// }
-	import { send } from 'httpie';
-	export async function preload() {
-		let res = await send('GET', 'https://jsonplaceholder.typicode.com/posts');
+	import { get } from 'freshie/http';
+
+	export async function preload(req, context) {
+		let res = await get('https://jsonplaceholder.typicode.com/posts');
 		return { articles: res.data };
 	}
 </script>

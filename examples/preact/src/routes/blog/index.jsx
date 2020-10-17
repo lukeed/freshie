@@ -1,4 +1,4 @@
-import { send } from 'httpie';
+import { get } from 'freshie/http';
 import { h, Fragment } from 'preact';
 
 // export async function preload() {
@@ -8,7 +8,7 @@ import { h, Fragment } from 'preact';
 // }
 
 export async function preload() {
-	let res = await send('GET', 'https://jsonplaceholder.typicode.com/posts');
+	let res = await get('https://jsonplaceholder.typicode.com/posts');
 	return { articles: res.data };
 }
 

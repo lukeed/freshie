@@ -4,9 +4,6 @@
     "build": "freshie build",
     "watch": "freshie watch"
   },
-  "dependencies": {
-    "httpie": "next"
-  },
   "devDependencies": {
     "@freshie/ssr.node": "workspace:*",
     "@freshie/ui.svelte": "workspace:*",
