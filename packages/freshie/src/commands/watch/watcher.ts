@@ -1,14 +1,14 @@
 import { relative } from 'path';
 // import HTML from './html';
 
-/**
- * Create a Watcher from base config
- * @param config {import('rollup').RollupWatchOptions}
- * @returns {import('rollup').RollupWatcher}
- */
-export default function (config: Rollup.Config, argv: Argv.Options): Rollup.Watcher {
+interface EventHooks {
+	onError?(msg: string): void;
+	onUpdate?(files: string[]): void;
+}
+
+export default function (config: Rollup.Config, argv: Argv.Watch, hooks: EventHooks = {}): Rollup.Watcher {
 	const { src, dest } = argv;
-	// const { onUpdate, onError } = TODO;
+	const { onUpdate, onError } = hooks;
 	// const hasMap = !!config.output.sourcemap;
 
 	// dev-only plugins
@@ -30,7 +30,7 @@ export default function (config: Rollup.Config, argv: Argv.Options): Rollup.Watc
 	});
 
 	watcher.on('event', evt => {
-		console.log(evt);
+		// console.log(evt);
 
 		switch (evt.code) {
 			case 'START': {
@@ -40,13 +40,14 @@ export default function (config: Rollup.Config, argv: Argv.Options): Rollup.Watc
 			}
 
 			case 'BUNDLE_END': {
-				// TODO: prettify
+				// TODO: prettify timing value (utils.pretty)
 				console.info(`Bundled in ${evt.duration}ms`);
-				// if (onUpdate && UPDATES.length) onUpdate(UPDATES);
+				if (onUpdate && UPDATES.length) onUpdate(UPDATES);
 				break;
 			}
 
 			case 'ERROR': {
+				// TODO: onError
 				console.error('ERROR', evt.error);
 				break;
 			}

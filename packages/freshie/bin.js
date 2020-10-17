@@ -12,8 +12,11 @@ sade('freshie')
 	.option('-m, --minify', 'Minify built assets', true)
 	.action(commands.build)
 
-	.command('watch [src]')
+	// TODO; HTTP/2 option flags
+	.command('watch [src]').alias('dev')
 	.describe('Compile the Worker(s) within a directory.')
-	.alias('dev').action(commands.watch)
+	.option('-H, --host', 'A hostname on which to start the application', 'localhost')
+	.option('-p, --port', 'A port number on which to start the application', 8080)
+	.action(commands.watch)
 
 	.parse(process.argv);

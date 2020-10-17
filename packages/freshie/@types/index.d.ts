@@ -22,6 +22,11 @@ declare namespace Argv {
 		//
 		isProd: boolean;
 	}
+
+	interface Watch extends Options {
+		port?: number;
+		host?: string;
+	}
 }
 
 declare namespace Config {

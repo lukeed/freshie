@@ -1,9 +1,4 @@
 <script context="module">
-	// export async function preload(req) {
-	// 	let res = await fetch(`https://jsonplaceholder.typicode.com/posts/${req.params.id}`);
-	// 	let article = await res.json();
-	// 	return { article };
-	// }
 	import { get } from 'freshie/http';
 
 	export async function preload(req) {
