@@ -1,12 +1,12 @@
 {
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@freshie/plugin.babel",
   "dependencies": {
     "@rollup/plugin-babel": "^5.2.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0",
-    "freshie": "workspace:*"
+    "freshie": "*"
   },
   "publishConfig": {
     "access": "public"

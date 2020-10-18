@@ -36,6 +36,6 @@ build('freshie', {
 	plugins: [
 		resolve,
 		typescript,
-		// terser
+		terser
 	],
 });

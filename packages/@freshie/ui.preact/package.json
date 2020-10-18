@@ -1,13 +1,13 @@
 {
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@freshie/ui.preact",
   "dependencies": {
     "preact-render-to-string": "^5.1.10"
   },
   "peerDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.10.0",
-    "@freshie/plugin.babel": "workspace:*",
-    "freshie": "workspace:*",
+    "@freshie/plugin.babel": "*",
+    "freshie": "*",
     "preact": "^10.0.0"
   },
   "peerDependenciesMeta": {

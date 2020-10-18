@@ -1,9 +1,9 @@
 {
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@freshie/ui.vue",
   "peerDependencies": {
-    "freshie": "workspace:*",
+    "freshie": "*",
     "vue": "^2.6.0"
   },
   "publishConfig": {

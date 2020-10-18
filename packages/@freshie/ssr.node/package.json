@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@freshie/ssr.node",
   "dependencies": {
     "@polka/url": "next",
@@ -7,7 +7,7 @@
     "sirv": "^1.0.6"
   },
   "peerDependencies": {
-    "freshie": "workspace:*"
+    "freshie": "*"
   },
   "publishConfig": {
     "access": "public"

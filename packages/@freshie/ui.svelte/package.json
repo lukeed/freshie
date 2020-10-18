@@ -1,11 +1,11 @@
 {
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@freshie/ui.svelte",
   "dependencies": {
     "rollup-plugin-svelte": "^6.0.0"
   },
   "peerDependencies": {
-    "freshie": "workspace:*",
+    "freshie": "*",
     "svelte": "^3.25.0"
   },
   "publishConfig": {

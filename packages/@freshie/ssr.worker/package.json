@@ -1,11 +1,11 @@
 {
-  "version": "0.0.0",
+  "version": "0.0.1",
   "name": "@freshie/ssr.worker",
   "dependencies": {
     "regexparam": "^1.3.0"
   },
   "peerDependencies": {
-    "freshie": "workspace:*"
+    "freshie": "*"
   },
   "publishConfig": {
     "access": "public"
