@@ -1,3 +1,9 @@
+const { join } = require('path');
+
+exports.alias = function (config) {
+	config.entries['!!~error~!!'] = join(__dirname, '_error.jsx');
+}
+
 exports.templates = function (config) {
 	config.test = /\.[tj]sx?$/;
 }

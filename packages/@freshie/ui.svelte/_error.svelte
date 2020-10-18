@@ -1,6 +1,6 @@
 <script context="module">
 	export function preload(req, context) {
-		console.log('_error.svelte got:', req, context);
+		// console.log('_error.svelte got:', req, context);
 		return { status: context.status }
 	}
 </script>
