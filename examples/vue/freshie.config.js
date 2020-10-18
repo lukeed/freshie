@@ -1,3 +1,7 @@
+/**
+ * NOTE: WIP -- no SSR attempts yet
+ */
+
 exports.rollup = function (config) {
 	config.plugins.push(
 		// https://rollup-plugin-vue.vuejs.org/options.html
