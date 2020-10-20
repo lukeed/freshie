@@ -192,7 +192,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], errors: Build.
 		plugins: [
 			Plugin.Router,
 			Plugin.Copy(options.copy),
-			Plugin.Runtime(routes, errors, true),
+			Plugin.Runtime(src, routes, errors, true),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
@@ -236,7 +236,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], errors: Build.
 		},
 		plugins: [
 			Plugin.Template(template),
-			Plugin.Runtime(routes, errors, false),
+			Plugin.Runtime(src, routes, errors, false),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
 			require('@rollup/plugin-replace')({
