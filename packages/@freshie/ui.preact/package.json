@@ -1,6 +1,7 @@
 {
   "version": "0.0.1",
   "name": "@freshie/ui.preact",
+  "types": "index.d.ts",
   "dependencies": {
     "preact-render-to-string": "^5.1.10"
   },
