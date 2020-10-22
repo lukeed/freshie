@@ -1,0 +1,14 @@
+{
+  "version": "0.0.0",
+  "name": "@freshie/plugin.typescript",
+  "dependencies": {
+    "rollup-plugin-typescript2": "^0.28.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=3.9.0",
+    "freshie": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
