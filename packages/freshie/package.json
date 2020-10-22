@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "repository": "lukeed/freshie",
   "license": "MIT",
+  "types": "index.d.ts",
   "bin": {
     "freshie": "bin.js"
   },
@@ -19,6 +20,7 @@
     }
   },
   "files": [
+    "*.d.ts",
     "*.js",
     "build",
     "runtime",
