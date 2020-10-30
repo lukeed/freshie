@@ -4,20 +4,43 @@ const { promisify } = require('util');
 const postcss = require('postcss');
 
 const read = promisify(readFile);
+let render_stylus, render_less, render_sass;
 
-function _stylus(filename, data, options={}) {
-	// TODO: try/catch for module load
-	const stylus = require('stylus');
+function load(name) {
+	try { return require(name) }
+	catch (e) { throw new Error(`Please install the "${name}" package:\n  $ npm install --save-dev ${name}`) }
+}
+
+async function stylus(filename, sourcemap, options={}) {
+	if (!render_stylus) render_stylus = load('stylus');
+
+	options.filename = filename;
+	let data = await read(filename, 'utf8');
+	if (sourcemap) options.sourcemap={ comment: false };
+
+	let ctx = render_stylus(data, options);
+
 	return new Promise((res, rej) => {
-		// TODO: other options (sourcemap, import, etc)
-		stylus.render(data, { ...options, filename }, (err, css) => {
-			return err ? rej(err) : res(css);
+		ctx.render((err, css) => {
+			let map = ctx.sourcemap;
+			return err ? rej(err) : res({ css, map });
 		});
 	});
 }
 
+async function less(filename, sourcemap, options={}) {
+	if (!render_less) {
+		render_less = load('less').render;
+	}
+
+	options.filename = filename;
+	if (sourcemap) options.sourceMap={};
+	let data = await read(filename, 'utf8');
+	return render_less(data, options);
+}
+
 module.exports = function (opts={}) {
-	const { plugins=[], assets, extract, ...rest } = opts;
+	const { plugins=[], assets, extract, sourcemap, ...rest } = opts;
 
 	let toExtract = false;
 	const FILES = new Map, REFS = new Map;
@@ -25,21 +48,24 @@ module.exports = function (opts={}) {
 	else if (typeof extract === 'function') toExtract = extract;
 	else if (extract === true) toExtract = () => 'bundle.css';
 
+	const toMap = sourcemap != null && !!sourcemap;
 	const RUNTIME = require.resolve('./runtime.js');
 
 	return {
 		name: 'freshie/postcss',
 
 		async load(filename) {
-			let source;
+			let source, tmp, map;
 			if (/\.css$/.test(filename)) {
 				source = await read(filename, 'utf8');
 			} else if (/\.styl(us)?$/.test(filename)) {
-				source = await _stylus(filename, await read(filename, 'utf8'), rest.stylus);
+				tmp = await stylus(filename, toMap, rest.stylus);
 				filename = filename.replace(/\.styl(us)?$/, '.css');
+				source=tmp.css; map=tmp.map;
 			} else if (/\.less$/.test(filename)) {
-				console.log('[TODO][styles] less support');
+				tmp = await less(filename, toMap, rest.less);
 				filename = filename.replace(/\.less$/, '.css');
+				source=tmp.css; map=tmp.map;
 			} else if (/\.s[ac]ss$/.test(filename)) {
 				console.log('[TODO][styles] scss support');
 				filename = filename.replace(/\.s[ac]ss$/, '.css');
@@ -79,13 +105,21 @@ module.exports = function (opts={}) {
 				);
 			}
 
+			if (sourcemap && map) {
+				map = { ...sourcemap, prev: map };
+			}
+
 			const output = await postcss(copy).process(source, {
-				...rest, from: filename,
+				...rest, map, from: filename,
 			});
 
 			if (toExtract) {
 				filename = toExtract(filename);
 			}
+
+			// TODO: handle `if (sourcemap && output.map)` -> cache
+			// NOTE: `sourcemap.inline` already handled
+			// console.log('FINAL OUTPUT', output.map);
 
 			const content = (FILES.get(filename) || '') + output.css;
 			FILES.set(filename, content); // full asset source

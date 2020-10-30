@@ -26,9 +26,7 @@ exports.postcss = function (config, context) {
 	config.modules.generateScopedName = '[name]__[local]___[hash:base64:5]';
 
 	if (context.isProd) {
-		config.sourcemap = false;
 		config.modules.generateScopedName = '[hash:base64:5]';
-
 		if (installed('autoprefixer')) {
 			config.plugins.push(require('autoprefixer')());
 		}

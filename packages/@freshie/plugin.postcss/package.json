@@ -8,6 +8,7 @@
     "autoprefixer": "^9.8.0",
     "cssnano": "^4.1.10",
     "freshie": "*",
+    "less": "^3.12.0",
     "postcss": "^7.0.32",
     "stylus": "^0.54.0"
   },
@@ -16,6 +17,9 @@
       "optional": true
     },
     "cssnano": {
+      "optional": true
+    },
+    "less": {
       "optional": true
     },
     "stylus": {
