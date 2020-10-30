@@ -7,9 +7,9 @@
     "preact": "10.4.8"
   },
   "devDependencies": {
-    "esbuild": "0.7.7",
     "@freshie/plugin.esbuild": "workspace:*",
     "@freshie/ui.preact": "workspace:*",
-    "freshie": "workspace:*"
+    "freshie": "workspace:*",
+    "esbuild": "0.8.0"
   }
 }
