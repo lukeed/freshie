@@ -1,0 +1,28 @@
+{
+  "version": "0.0.0",
+  "name": "@freshie/plugin.postcss",
+  "dependencies": {
+    "postcss-modules": "^3.2.0"
+  },
+  "peerDependencies": {
+    "autoprefixer": "^9.8.0",
+    "cssnano": "^4.1.10",
+    "freshie": "*",
+    "postcss": "^7.0.32",
+    "stylus": "^0.54.0"
+  },
+  "peerDependenciesMeta": {
+    "autoprefixer": {
+      "optional": true
+    },
+    "cssnano": {
+      "optional": true
+    },
+    "stylus": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
