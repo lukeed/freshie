@@ -93,6 +93,8 @@ declare namespace Config {
 		ssr: boolean;
 		isProd: boolean;
 		minify: boolean;
+		cwd: string;
+		src: string;
 	}
 
 	interface Group {
