@@ -1,12 +1,6 @@
 import { get } from 'freshie/http';
 import { h, Fragment } from 'preact';
 
-// export async function preload(req) {
-// 	let res = await fetch(`https://jsonplaceholder.typicode.com/posts/${req.params.id}`);
-// 	let article = await res.json();
-// 	return { article };
-// }
-
 export async function preload(req) {
 	let res = await get(`https://jsonplaceholder.typicode.com/posts/${req.params.id}`);
 	return { article: res.data };

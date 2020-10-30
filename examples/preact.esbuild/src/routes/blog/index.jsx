@@ -1,12 +1,6 @@
 import { get } from 'freshie/http';
 import { h, Fragment } from 'preact';
 
-// export async function preload() {
-// 	let res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
-// 	let articles = await res.json();
-// 	return { articles };
-// }
-
 export async function preload() {
 	let res = await get('https://jsonplaceholder.typicode.com/posts');
 	return { articles: res.data };
@@ -33,5 +27,5 @@ export default function Blog(props) {
 				</ul>
 			</div>
 		</>
-	)
+	);
 }

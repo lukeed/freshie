@@ -8,8 +8,12 @@
   },
   "devDependencies": {
     "@freshie/plugin.esbuild": "workspace:*",
+    "@freshie/plugin.postcss": "workspace:*",
     "@freshie/ui.preact": "workspace:*",
+    "esbuild": "0.8.0",
     "freshie": "workspace:*",
-    "esbuild": "0.8.0"
+    "postcss": "7.0.32",
+    "cssnano": "4.1.10",
+    "stylus": "0.54.8"
   }
 }
