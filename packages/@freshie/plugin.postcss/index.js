@@ -8,7 +8,7 @@ let render_stylus, render_less, render_sass;
 
 function load(name) {
 	try { return require(name) }
-	catch (e) { throw new Error(`Please install the "${name}" package:\n  $ npm install --save-dev ${name}`) }
+	catch (e) { throw new Error(`\nPlease install the "${name}" package:\n  $ npm install --save-dev ${name}`) }
 }
 
 async function stylus(filename, sourcemap, options={}) {

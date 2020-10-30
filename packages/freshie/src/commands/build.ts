@@ -8,19 +8,23 @@ async function compile(rollup: typeof import('rollup').rollup, config: Config.Ro
 }
 
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
-	normalize(src, argv, { isProd: true });
+	try {
+		normalize(src, argv, { isProd: true });
 
-	const config = await load(argv as Argv.Options).catch(log.bail);
+		const config = await load(argv as Argv.Options).catch(log.bail);
 
-	if (fs.exists(argv.dest)) {
-		log.warn(`Removing "${ log.$dir(argv.destDir) }" directory`);
-		await fs.remove(argv.dest);
+		if (fs.exists(argv.dest)) {
+			log.warn(`Removing "${ log.$dir(argv.destDir) }" directory`);
+			await fs.remove(argv.dest);
+		}
+
+		const { rollup } = require('rollup');
+
+		// TODO: Add Manifest | HTML to Client
+		await compile(rollup, config.client);
+		if (config.server) await compile(rollup, config.server);
+		log.success('Build complete! 🎉');
+	} catch (err) {
+		log.bail(err);
 	}
-
-	const { rollup } = require('rollup');
-
-	// TODO: Add Manifest | HTML to Client
-	await compile(rollup, config.client);
-	if (config.server) await compile(rollup, config.server);
-	log.success('Build complete! 🎉');
 }
