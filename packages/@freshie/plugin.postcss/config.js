@@ -39,6 +39,15 @@ exports.rollup = function (config, context, options) {
 	const { isProd, minify } = context;
 	const entries = options.alias.entries;
 
+	// TODO: set sourcemap via CLI ARGV ?
+	//   If dev changes `config.output.sourcemap = true` via file,
+	//   reading/reacting to it here is un-responsive bcuz value set
+	//   before user config file is processed, ignoring changes.
+
+	// if (!config.output.sourcemap) {
+	// 	options.postcss.sourcemap = true;
+	// }
+
 	if (isProd && minify && installed('cssnano')) {
 		options.postcss.plugins.push(
 			require('cssnano')(options.cssnano)

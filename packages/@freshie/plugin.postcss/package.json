@@ -9,6 +9,7 @@
     "cssnano": "^4.1.10",
     "freshie": "*",
     "less": "^3.12.0",
+    "node-sass": "^4.14.0",
     "postcss": "^7.0.32",
     "stylus": "^0.54.0"
   },
@@ -20,6 +21,9 @@
       "optional": true
     },
     "less": {
+      "optional": true
+    },
+    "node-sass": {
       "optional": true
     },
     "stylus": {

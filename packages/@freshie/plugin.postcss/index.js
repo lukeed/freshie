@@ -22,8 +22,30 @@ async function stylus(filename, sourcemap, options={}) {
 
 	return new Promise((res, rej) => {
 		ctx.render((err, css) => {
-			let map = ctx.sourcemap;
+			let map = sourcemap && ctx.sourcemap;
 			return err ? rej(err) : res({ css, map });
+		});
+	});
+}
+
+async function sass(filename, sourcemap, options={}) {
+	if (!render_sass) render_sass = load('node-sass').render;
+
+	const indentedSyntax = /\.sass$/.test(filename);
+	options.data = await read(filename, 'utf8');
+	options.file = filename;
+
+	if (sourcemap) {
+		options.outFile = filename.replace(/\.s[ac]ss$/, '.css');
+		options.sourceMap = true;
+	}
+
+	return new Promise((res, rej) => {
+		render_sass({ ...options, indentedSyntax }, (err, result) => {
+			return err ? rej(err) : res({
+				css: result.css.toString(),
+				map: result.map && result.map.toString()
+			});
 		});
 	});
 }
@@ -67,8 +89,9 @@ module.exports = function (opts={}) {
 				filename = filename.replace(/\.less$/, '.css');
 				source=tmp.css; map=tmp.map;
 			} else if (/\.s[ac]ss$/.test(filename)) {
-				console.log('[TODO][styles] scss support');
+				tmp = await sass(filename, toMap, rest.sass);
 				filename = filename.replace(/\.s[ac]ss$/, '.css');
+				source=tmp.css; map=tmp.map;
 			} else {
 				return null;
 			}
