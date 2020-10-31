@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.3",
   "name": "@freshie/plugin.esbuild",
   "dependencies": {
     "rollup-plugin-esbuild": "^2.5.2"

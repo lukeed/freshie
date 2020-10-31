@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.3",
   "name": "@freshie/plugin.babel",
   "dependencies": {
     "@rollup/plugin-babel": "^5.2.0"

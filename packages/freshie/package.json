@@ -1,6 +1,6 @@
 {
   "name": "freshie",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": "lukeed/freshie",
   "license": "MIT",
   "types": "index.d.ts",
