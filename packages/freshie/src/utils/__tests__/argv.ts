@@ -16,7 +16,7 @@ toBool('should parse `false` values', () => {
 	assert.is(utils.toBool('false'), false);
 });
 
-toBool('should return `true` otherwise`', () => {
+toBool('should return `fallback` otherwise (default = true)', () => {
 	assert.is(utils.toBool(), true);
 	assert.is(utils.toBool(''), true);
 	assert.is(utils.toBool(null), true);
@@ -24,6 +24,11 @@ toBool('should return `true` otherwise`', () => {
 	assert.is(utils.toBool('hello'), true);
 	assert.is(utils.toBool(123), true);
 	assert.is(utils.toBool(1), true);
+});
+
+toBool('should return `fallback` on nullish value', () => {
+	assert.is(utils.toBool(null, false), false);
+	assert.is(utils.toBool(undefined, false), false);
 });
 
 toBool.run();
@@ -74,6 +79,7 @@ normalize('should accept `Argv.Options` partial values', () => {
 
 	assert.is(input.ssr, true);
 	assert.is(input.isProd, false);
+	assert.is(input.sourcemap, true); // isProd = false
 	assert.is(input.minify, false); // isProd = false
 });
 
@@ -81,6 +87,7 @@ normalize('should accept extra values', () => {
 	const input: Partial<Argv.Options> = {};
 	utils.normalize('', input, { isProd: true });
 	assert.is(input.isProd, true);
+	assert.is(input.sourcemap, false);
 	assert.is(input.minify, true);
 });
 
@@ -89,6 +96,13 @@ normalize('should allow `minify` to be disabled in production', () => {
 	utils.normalize('', input, { isProd: true, minify: false });
 	assert.is(input.isProd, true);
 	assert.is(input.minify, false);
+});
+
+normalize('should allow `sourcemap` to be enabled in production', () => {
+	const input: Partial<Argv.Options> = {};
+	utils.normalize('', input, { isProd: true, sourcemap: true });
+	assert.is(input.isProd, true);
+	assert.is(input.sourcemap, true);
 });
 
 normalize.run();

@@ -31,8 +31,8 @@ export function merge(old: Config.Options, nxt: ConfigData, context: Config.Cont
 
 function assemble(configs: ConfigData[], argv: Argv.Options, ssr = false): ConfigPair {
 	const options = klona(defaults);
-	const { src, minify, isProd, cwd } = argv;
-	const context: Config.Context = { ssr, minify, isProd, src, cwd };
+	const { src, minify, isProd, cwd, sourcemap } = argv;
+	const context: Config.Context = { ssr, minify, isProd, sourcemap, src, cwd };
 	configs.forEach(tmp => merge(options, tmp, context));
 
 	const aliases = options.alias.entries;

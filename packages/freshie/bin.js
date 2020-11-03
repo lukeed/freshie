@@ -9,7 +9,9 @@ sade('freshie')
 
 	.command('build [src]')
 	.describe('Compile the Worker(s) within a directory.')
+	.option('-x, --sourcemap', 'Generate sourcemap(s)')
 	.option('-m, --minify', 'Minify built assets', true)
+	.example('build --sourcemap --no-minify')
 	.action(commands.build)
 
 	.command('watch [src]')

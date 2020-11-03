@@ -13,6 +13,7 @@ declare namespace Argv {
 	interface Options {
 		cwd: string;
 		minify: boolean;
+		sourcemap: boolean;
 		ssr: boolean;
 		//
 		src: string;
@@ -90,10 +91,11 @@ declare namespace Config {
 	}
 
 	interface Context {
+		cwd: string;
 		ssr: boolean;
 		isProd: boolean;
+		sourcemap: boolean;
 		minify: boolean;
-		cwd: string;
 		src: string;
 	}
 

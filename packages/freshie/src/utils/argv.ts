@@ -2,7 +2,9 @@ import { join, resolve } from 'path';
 import { isDir } from './fs';
 
 // default = true
-export const toBool = (val?: unknown) => val == null || !/(0|false)/.test(val as string);
+export function toBool(val?: unknown, fallback = true) {
+	return val == null ? fallback : !/(0|false)/.test(val as string);
+}
 
 export function normalize(src: Nullable<string>, argv: Partial<Argv.Options>, extra: Partial<Argv.Options> = {}) {
 	Object.assign(argv, extra);
@@ -16,8 +18,13 @@ export function normalize(src: Nullable<string>, argv: Partial<Argv.Options>, ex
 
 	// default = false
 	argv.isProd = !!argv.isProd;
-	argv.minify = argv.isProd && toBool(argv.minify);
 
 	// default = true
-	argv.ssr = toBool(argv.ssr);
+	argv.ssr = toBool(argv.ssr, true);
+
+	// default = (dev) false; (prod) true
+	argv.minify = argv.isProd && toBool(argv.minify, true);
+
+	// default = (dev) true; (prod) false
+	argv.sourcemap = toBool(argv.sourcemap, !argv.isProd);
 }
