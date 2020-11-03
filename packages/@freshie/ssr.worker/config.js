@@ -18,4 +18,5 @@ exports.rollup = function (config, context) {
 	config.output.format = 'esm';
 	config.output.esModule = false;
 	config.output.sourcemap = false;
+	context.sourcemap = false;
 }

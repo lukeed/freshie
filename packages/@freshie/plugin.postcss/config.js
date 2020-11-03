@@ -18,9 +18,9 @@ exports.cssnano = {
 }
 
 exports.postcss = function (config, context) {
-	config.sourcemap = { inline: true };
 	config.modules = config.modules || {};
 	config.plugins = [].concat(config.plugins || []);
+	config.sourcemap = context.sourcemap ? { inline: true } : false;
 
 	config.modules.scopeBehaviour = 'local';
 	config.modules.generateScopedName = '[name]__[local]___[hash:base64:5]';
@@ -39,14 +39,9 @@ exports.rollup = function (config, context, options) {
 	const { isProd, minify } = context;
 	const entries = options.alias.entries;
 
-	// TODO: set sourcemap via CLI ARGV ?
-	//   If dev changes `config.output.sourcemap = true` via file,
-	//   reading/reacting to it here is un-responsive bcuz value set
-	//   before user config file is processed, ignoring changes.
-
-	// if (!config.output.sourcemap) {
-	// 	options.postcss.sourcemap = true;
-	// }
+	if (context.sourcemap) {
+		options.postcss.sourcemap = true;
+	}
 
 	if (isProd && minify && installed('cssnano')) {
 		options.postcss.plugins.push(

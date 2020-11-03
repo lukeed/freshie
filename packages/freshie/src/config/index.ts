@@ -170,15 +170,14 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 }
 
 export function Client(argv: Argv.Options, routes: Build.Route[], errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
-	const { src, dest, minify } = argv;
-	const { isProd } = context;
+	const { src, isProd, minify, sourcemap } = context;
 
 	return {
 		// NOTE: may detect & inject
 		input: join(src, 'index.dom.js'),
 		output: {
-			sourcemap: !isProd,
-			dir: join(dest, 'client'),
+			sourcemap: !!sourcemap,
+			dir: join(argv.dest, 'client'),
 			minifyInternalExports: isProd,
 			entryFileNames: isProd ? '[name].[hash].js' : '[name].js',
 			assetFileNames: isProd ? '[name].[hash].[ext]' : '[name].[ext]',
@@ -216,18 +215,17 @@ export function Client(argv: Argv.Options, routes: Build.Route[], errors: Build.
 }
 
 export function Server(argv: Argv.Options, routes: Build.Route[], errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
-	const { src, dest, minify } = argv;
-	const { isProd } = context;
+	const { src, isProd, minify, sourcemap } = context;
 
-	const template = join(dest, 'client', 'index.html');
+	const template = join(argv.dest, 'client', 'index.html');
 
 	return {
 		// NOTE: may detect & inject
 		input: join(src, 'index.ssr.js'),
 		output: {
-			file: join(dest, 'server', 'index.js'),
+			file: join(argv.dest, 'server', 'index.js'),
 			minifyInternalExports: isProd,
-			sourcemap: !isProd,
+			sourcemap: !!sourcemap,
 		},
 		treeshake: {
 			propertyReadSideEffects: false,
