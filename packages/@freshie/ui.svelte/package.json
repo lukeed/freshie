@@ -3,7 +3,7 @@
   "name": "@freshie/ui.svelte",
   "types": "index.d.ts",
   "dependencies": {
-    "rollup-plugin-svelte": "^6.0.0"
+    "rollup-plugin-svelte": "^6.1.0"
   },
   "peerDependencies": {
     "freshie": "*",

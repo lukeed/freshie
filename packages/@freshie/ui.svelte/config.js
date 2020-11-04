@@ -34,6 +34,8 @@ exports.rollup = function (config, context, options) {
 	options.svelte.emitCss = true;
 	*/
 
+	options.svelte.generate = context.ssr ? 'ssr' : 'dom';
+
 	config.plugins.push(
 		require('rollup-plugin-svelte')(options.svelte)
 	);
