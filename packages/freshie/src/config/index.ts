@@ -196,10 +196,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 				headers: false,
 				filename: false,
 				routes(file: string) {
-					if (file === entries.dom) {
-						console.log('FOUND', file);
-						return '*';
-					}
+					if (file === entries.dom) return '*';
 					for (let i=0; i < routes.length; i++) {
 						if (routes[i].file === file) return routes[i].pattern;
 					}
