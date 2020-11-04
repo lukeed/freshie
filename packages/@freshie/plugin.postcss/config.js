@@ -18,14 +18,16 @@ exports.cssnano = {
 }
 
 exports.postcss = function (config, context) {
-	config.modules = config.modules || {};
-	config.plugins = [].concat(config.plugins || []);
-	config.sourcemap = context.sourcemap ? { inline: true } : false;
+	const { sourcemap, isProd } = context;
 
+	config.plugins = [].concat(config.plugins || []);
+	config.sourcemap = sourcemap ? { inline: true } : false;
+
+	config.modules = config.modules || {};
 	config.modules.scopeBehaviour = 'local';
 	config.modules.generateScopedName = '[name]__[local]___[hash:base64:5]';
 
-	if (context.isProd) {
+	if (isProd) {
 		config.modules.generateScopedName = '[hash:base64:5]';
 		if (installed('autoprefixer')) {
 			config.plugins.push(require('autoprefixer')());
@@ -38,10 +40,6 @@ exports.postcss = function (config, context) {
 exports.rollup = function (config, context, options) {
 	const { isProd, minify } = context;
 	const entries = options.alias.entries;
-
-	if (context.sourcemap) {
-		options.postcss.sourcemap = true;
-	}
 
 	if (isProd && minify && installed('cssnano')) {
 		options.postcss.plugins.push(
@@ -68,7 +66,6 @@ exports.rollup = function (config, context, options) {
 		}
 	};
 
-	// TODO: sass vs scss -- copy w/ `indentedSyntax: true` override?
 	options.postcss.sass = { ...options.sass, ...options.postcss.sass };
 	options.postcss.stylus = { ...options.stylus, ...options.postcss.stylus };
 	options.postcss.less = { ...options.less, ...options.postcss.less };

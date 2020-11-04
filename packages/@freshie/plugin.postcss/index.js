@@ -130,6 +130,8 @@ module.exports = function (opts={}) {
 
 			if (sourcemap && map) {
 				map = { ...sourcemap, prev: map };
+			} else if (!sourcemap) {
+				map = false;
 			}
 
 			const output = await postcss(copy).process(source, {
@@ -140,7 +142,7 @@ module.exports = function (opts={}) {
 				filename = toExtract(filename);
 			}
 
-			// TODO: handle `if (sourcemap && output.map)` -> cache
+			// TODO: handle external sourcemap: `if (sourcemap && output.map)`
 			// NOTE: `sourcemap.inline` already handled
 			// console.log('FINAL OUTPUT', output.map);
 
