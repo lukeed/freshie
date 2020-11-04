@@ -10,7 +10,7 @@
     "@freshie/plugin.esbuild": "workspace:*",
     "@freshie/plugin.postcss": "workspace:*",
     "@freshie/ui.preact": "workspace:*",
-    "esbuild": "0.8.0",
+    "esbuild": "0.7.7",
     "freshie": "workspace:*",
     "postcss": "7.0.32",
     "cssnano": "4.1.10",
