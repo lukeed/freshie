@@ -6,6 +6,8 @@ import * as log from '../utils/log';
 import { defaults } from './options';
 import * as Plugin from './plugins';
 
+import type { Asset } from 'rollup-route-manifest';
+
 type ConfigData = Partial<Config.Customize.Options> & {
 	rollup?: Config.Customize.Rollup
 };
@@ -186,6 +188,25 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 			require('@rollup/plugin-json')({
 				compact: isProd,
 				...options.json
+			}),
+			// for CLIENT runtime
+			require('rollup-route-manifest')({
+				merge: true,
+				inline: true,
+				headers: false,
+				filename: false,
+				routes(file: string) {
+					if (file === entries.dom) {
+						console.log('FOUND', file);
+						return '*';
+					}
+					for (let i=0; i < routes.length; i++) {
+						if (routes[i].file === file) return routes[i].pattern;
+					}
+				},
+				format(files: Asset[]) {
+					return files.map(x => x.href);
+				}
 			}),
 			require('@rollup/plugin-commonjs')(options.commonjs),
 			minify && require('rollup-plugin-terser').terser(options.terser)
