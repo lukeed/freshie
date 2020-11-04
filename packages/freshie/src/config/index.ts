@@ -3,7 +3,6 @@ import { join, resolve } from 'path';
 import * as scoped from '../utils/scoped';
 import * as utils from '../utils/index';
 import * as log from '../utils/log';
-import * as fs from '../utils/fs';
 import { defaults } from './options';
 import * as Plugin from './plugins';
 
@@ -103,30 +102,11 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		key: 'xxx',
 	});
 
-	// auto-detect entries; set SSR fallback
-	const entries = await fs.list(src).then(files => {
-		// dom: index.{ext} || index.dom.{ext}
-		let dom = fs.match(files, /index\.(dom\.)?[tjm]sx?$/);
-		if (dom) dom = join(src, dom);
-
-		// ssr: index.ssr.{ext}
-		let ssr = fs.match(files, /index\.ssr\.[tjm]sx?$/);
-		ssr = ssr ? join(src, ssr) : options.ssr.entry;
-
-		// html: index.html || index.html.{ext}
-		let html = fs.match(files, /index\.html(\.(svelte|vue|[tjm]sx?))?$/);
-		if (html) html = join(src, html);
-
-		return { dom, ssr, html };
-	});
-
-	if (!entries.dom) throw new Error('Missing "DOM" entry file!');
-	if (!entries.html) throw new Error('Missing HTML template file!');
+	// auto-detect entry points, w/ SSR fallback
+	const entries = await utils.entries(src, options);
 
 	// build DOM configuration
-	const client = Client(argv, routes, errors, DOM.options, DOM.context);
-	client.plugins.unshift(Plugin.HTML(entries.html, options));
-	client.input = entries.dom; // inject entry point
+	const client = Client(argv, routes, entries, errors, DOM.options, DOM.context);
 
 	let server: Rollup.Config;
 
@@ -153,8 +133,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 		} // else error?
 
 		// Create SSR bundle config
-		server = Server(argv, routes, errors, SSR.options, SSR.context);
-		server.input = entries.ssr || SSR.options.ssr.entry; // inject entry point
+		server = Server(argv, routes, entries, errors, SSR.options, SSR.context);
 	}
 
 	customize.forEach(mutate => {
@@ -169,12 +148,11 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	return { options, client, server };
 }
 
-export function Client(argv: Argv.Options, routes: Build.Route[], errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
+export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, isProd, minify, sourcemap } = context;
 
 	return {
-		// NOTE: may detect & inject
-		input: join(src, 'index.dom.js'),
+		input: entries.dom,
 		output: {
 			sourcemap: !!sourcemap,
 			dir: join(argv.dest, 'client'),
@@ -191,6 +169,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], errors: Build.
 		plugins: [
 			Plugin.Router,
 			Plugin.Copy(options.copy),
+			Plugin.HTML(entries.html, options),
 			Plugin.Runtime(src, routes, errors, true),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
@@ -214,14 +193,13 @@ export function Client(argv: Argv.Options, routes: Build.Route[], errors: Build.
 	};
 }
 
-export function Server(argv: Argv.Options, routes: Build.Route[], errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
+export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
 	const { src, isProd, minify, sourcemap } = context;
 
 	const template = join(argv.dest, 'client', 'index.html');
 
 	return {
-		// NOTE: may detect & inject
-		input: join(src, 'index.ssr.js'),
+		input: entries.ssr || options.ssr.entry || join(src, 'index.ssr.js'),
 		output: {
 			file: join(argv.dest, 'server', 'index.js'),
 			minifyInternalExports: isProd,

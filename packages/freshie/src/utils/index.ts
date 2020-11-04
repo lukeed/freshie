@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import { exists } from './fs';
 
 export { collect as routes } from './routes';
+export { collect as entries } from './entries';
 export { collect as errors } from './errors';
 
 export function load<T=unknown>(str: string, dir?: string): T | false {

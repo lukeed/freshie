@@ -127,6 +127,12 @@ declare namespace Build {
 		file: string;
 		layout: Nullable<string>;
 	}
+
+	interface Entries {
+		dom: string;
+		html: string;
+		ssr: string;
+	}
 }
 
 declare namespace Runtime {
