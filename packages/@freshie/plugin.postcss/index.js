@@ -1,5 +1,5 @@
 const { basename } = require('path');
-const { readFile, readFileSync } = require('fs');
+const { existsSync, readFile, readFileSync } = require('fs');
 const { promisify } = require('util');
 const postcss = require('postcss');
 
@@ -11,14 +11,13 @@ function load(name) {
 	catch (e) { throw new Error(`\nPlease install the "${name}" package:\n  $ npm install --save-dev ${name}`) }
 }
 
-async function stylus(filename, sourcemap, options={}) {
+function stylus(filename, filedata, sourcemap, options={}) {
 	if (!render_stylus) render_stylus = load('stylus');
 
 	options.filename = filename;
-	let data = await read(filename, 'utf8');
 	if (sourcemap) options.sourcemap={ comment: false };
 
-	let ctx = render_stylus(data, options);
+	let ctx = render_stylus(filedata, options);
 
 	return new Promise((res, rej) => {
 		ctx.render((err, css) => {
@@ -28,11 +27,11 @@ async function stylus(filename, sourcemap, options={}) {
 	});
 }
 
-async function sass(filename, sourcemap, options={}) {
+function sass(filename, filedata, sourcemap, options={}) {
 	if (!render_sass) render_sass = load('node-sass').render;
 
 	const indentedSyntax = /\.sass$/.test(filename);
-	options.data = await read(filename, 'utf8');
+	options.data = filedata;
 	options.file = filename;
 
 	if (sourcemap) {
@@ -50,15 +49,14 @@ async function sass(filename, sourcemap, options={}) {
 	});
 }
 
-async function less(filename, sourcemap, options={}) {
+function less(filename, filedata, sourcemap, options={}) {
 	if (!render_less) {
 		render_less = load('less').render;
 	}
 
 	options.filename = filename;
 	if (sourcemap) options.sourceMap={};
-	let data = await read(filename, 'utf8');
-	return render_less(data, options);
+	return render_less(filedata, options);
 }
 
 module.exports = function (opts={}) {
@@ -76,22 +74,28 @@ module.exports = function (opts={}) {
 	return {
 		name: 'freshie/postcss',
 
-		async load(filename) {
-			let source, tmp, map;
-			if (/\.css$/.test(filename)) {
-				source = await read(filename, 'utf8');
-			} else if (/\.styl(us)?$/.test(filename)) {
-				tmp = await stylus(filename, toMap, rest.stylus);
-				filename = filename.replace(/\.styl(us)?$/, '.css');
-				source=tmp.css; map=tmp.map;
-			} else if (/\.less$/.test(filename)) {
-				tmp = await less(filename, toMap, rest.less);
-				filename = filename.replace(/\.less$/, '.css');
-				source=tmp.css; map=tmp.map;
-			} else if (/\.s[ac]ss$/.test(filename)) {
-				tmp = await sass(filename, toMap, rest.sass);
-				filename = filename.replace(/\.s[ac]ss$/, '.css');
-				source=tmp.css; map=tmp.map;
+		load(id) {
+			if (!/\.(css|s[ac]ss|less|styl(us)?)$/.test(id)) return null;
+			return existsSync(id) && read(id, 'utf8') || null;
+		},
+
+		async transform(source, id) {
+			let css, file, tmp, map;
+			if (/\.css$/.test(id)) {
+				css = source;
+				file = id;
+			} else if (/\.styl(us)?$/.test(id)) {
+				tmp = await stylus(id, source, toMap, rest.stylus);
+				file = id.replace(/\.styl(us)?$/, '.css');
+				css=tmp.css; map=tmp.map;
+			} else if (/\.less$/.test(id)) {
+				tmp = await less(id, source, toMap, rest.less);
+				file = id.replace(/\.less$/, '.css');
+				css=tmp.css; map=tmp.map;
+			} else if (/\.s[ac]ss$/.test(id)) {
+				tmp = await sass(id, source, toMap, rest.sass);
+				file = id.replace(/\.s[ac]ss$/, '.css');
+				css=tmp.css; map=tmp.map;
 			} else {
 				return null;
 			}
@@ -134,28 +138,28 @@ module.exports = function (opts={}) {
 				map = false;
 			}
 
-			const output = await postcss(copy).process(source, {
-				...rest, map, from: filename,
+			const output = await postcss(copy).process(css, {
+				...rest, map, from: file,
 			});
 
 			if (toExtract) {
-				filename = toExtract(filename);
+				file = toExtract(file);
 			}
 
 			// TODO: handle external sourcemap: `if (sourcemap && output.map)`
 			// NOTE: `sourcemap.inline` already handled
 			// console.log('FINAL OUTPUT', output.map);
 
-			const content = (FILES.get(filename) || '') + output.css;
-			FILES.set(filename, content); // full asset source
+			const content = (FILES.get(file) || '') + output.css;
+			FILES.set(file, content); // full asset source
 
-			const ref = REFS.get(filename) || this.emitFile({
+			const ref = REFS.get(file) || this.emitFile({
 				type: 'asset',
 				// sets `source` later
-				name: basename(filename),
+				name: basename(file),
 			});
 
-			REFS.set(filename, ref);
+			REFS.set(file, ref);
 
 			let loader = `
 				import { link } from "${RUNTIME}";
