@@ -53,7 +53,8 @@ exports.rollup = function (config, context, options) {
 		const match = /[\\\/+]?([^\\\/+]*)/i.exec(relative);
 		if (!match) return 'index.css'; // commons
 
-		const name = match[1].toLowerCase();
+		let name = match[1].toLowerCase();
+		if (!name.endsWith('.css')) name += '.css';
 		return (name.startsWith('_') ? '' : 'r.') + name;
 	};
 
