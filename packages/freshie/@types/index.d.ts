@@ -138,6 +138,8 @@ declare namespace Build {
 declare namespace Runtime {
 	type Params = Dict<string>;
 
+	type Headers = Dict<string | string[]>;
+
 	interface Request {
 		params: Params;
 		pathname: string;
@@ -148,6 +150,7 @@ declare namespace Runtime {
 	interface Context {
 		ssr: boolean;
 		status: number;
+		headers: Headers;
 		redirect?: string;
 		error?: Error;
 		dev: boolean;

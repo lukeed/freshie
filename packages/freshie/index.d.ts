@@ -97,6 +97,7 @@ declare module 'freshie' {
 
 	export type Props = Dict<any>;
 	export type Params = Dict<string>;
+	export type Headers = Dict<string | string[]>;
 
 	export interface Request {
 		params: Params;
@@ -108,6 +109,7 @@ declare module 'freshie' {
 	export interface Context {
 		ssr: boolean;
 		status: number;
+		headers: Headers;
 		redirect?: string;
 		error?: Error;
 		dev: boolean;
