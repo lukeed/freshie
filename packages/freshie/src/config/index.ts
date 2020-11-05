@@ -169,6 +169,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 			tryCatchDeoptimization: false
 		},
 		plugins: [
+			Plugin.HTTP,
 			Plugin.Router,
 			Plugin.Copy(options.copy),
 			Plugin.HTML(entries.html, options),
@@ -229,6 +230,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build
 			tryCatchDeoptimization: false
 		},
 		plugins: [
+			Plugin.HTTP,
 			Plugin.Template(template),
 			Plugin.Runtime(src, routes, errors, false),
 			require('@rollup/plugin-alias')(options.alias),
