@@ -37,6 +37,7 @@ export const defaults: Config.Options = {
 		'__BROWSER__': 'true',
 		'process.browser': 'true',
 		'process.env.NODE_ENV': 'development',
+		'__SSR__': 'true',
 	},
 
 	resolve: {

@@ -169,6 +169,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 			tryCatchDeoptimization: false
 		},
 		plugins: [
+			Plugin.ENV,
 			Plugin.HTTP,
 			Plugin.Router,
 			Plugin.Copy(options.copy),
@@ -180,6 +181,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 				...options.replace,
 				'__BROWSER__': 'true',
 				'process.browser': 'true',
+				'__SSR__': 'false',
 			}),
 			require('@rollup/plugin-node-resolve').default({
 				browser: true,
@@ -230,6 +232,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build
 			tryCatchDeoptimization: false
 		},
 		plugins: [
+			Plugin.ENV,
 			Plugin.HTTP,
 			Plugin.Template(template),
 			Plugin.Runtime(src, routes, errors, false),
@@ -239,6 +242,7 @@ export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build
 				...options.replace,
 				'__BROWSER__': 'false',
 				'process.browser': 'false',
+				'__SSR__': 'true',
 			}),
 			require('@rollup/plugin-node-resolve').default({
 				browser: false,

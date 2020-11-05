@@ -17,6 +17,10 @@
     "./http": {
       "import": "./http/index.mjs",
       "require": "./http/index.js"
+    },
+    "./env": {
+      "import": "./env/index.mjs",
+      "require": "./env/index.js"
     }
   },
   "files": [
@@ -25,7 +29,8 @@
     "build",
     "runtime",
     "router",
-    "http"
+    "http",
+    "env"
   ],
   "dependencies": {
     "@freshie/ssr.node": "workspace:*",

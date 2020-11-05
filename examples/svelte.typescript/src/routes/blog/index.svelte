@@ -1,9 +1,11 @@
 <script context="module" lang="ts">
+	import { SSR } from 'freshie/env';
 	import { get } from 'freshie/http';
 	import type { Preload } from 'freshie';
 
 	export const preload: Preload = async (req, context) => {
 		let res = await get('https://jsonplaceholder.typicode.com/posts');
+		if (SSR) console.log('I AM IN SSR ONLY');
 		return { articles: res.data };
 	}
 </script>
