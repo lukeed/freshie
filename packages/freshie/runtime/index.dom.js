@@ -14,13 +14,9 @@ function request(params) {
 	return { pathname, search, query, params };
 }
 
-function context(extra) {
-	return { ...extra, ssr: false, dev: __DEV__ };
-}
-
 function run(Tags, params, ctx, req) {
+	ctx = ctx || {};
 	params = params || {};
-	ctx = ctx || context();
 	var draw = hydrate || render;
 	var i=0, loaders=[], views=[];
 	var props = { params };
@@ -83,7 +79,7 @@ function define(pattern, importer) {
 	// }
 
 	router.on(pattern, (params) => {
-		var ctx = context();
+		var ctx = {};
 
 		Promise.all([
 			importer(), //=> Components
@@ -98,8 +94,7 @@ function define(pattern, importer) {
 }
 
 function is404(url) {
-	var ctx = context({ status: 404 });
-	ErrorPage({ url }, ctx);
+	ErrorPage({ url }, { status: 404 });
 }
 
 export function start(options) {

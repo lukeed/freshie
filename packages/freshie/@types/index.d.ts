@@ -148,12 +148,10 @@ declare namespace Runtime {
 	}
 
 	interface Context {
-		ssr: boolean;
 		status: number;
 		headers: Headers;
 		redirect?: string;
 		error?: Error;
-		dev: boolean;
 	}
 
 	interface Options {

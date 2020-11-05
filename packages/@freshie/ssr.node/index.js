@@ -81,8 +81,8 @@ export function start(options={}) {
 	}
 
 	return createServer(async (req, res) => {
-		let context = { status: 0, ssr: true, dev: __DEV__ };
-		let page={}, route, isAsset, request=parse(req, decode);
+		let page={}, request=parse(req, decode);
+		let route, isAsset, context={ status: 0 };
 		context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
 		request.query = request.query || {};

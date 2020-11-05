@@ -107,12 +107,10 @@ declare module 'freshie' {
 	}
 
 	export interface Context {
-		ssr: boolean;
 		status: number;
 		headers: Headers;
 		redirect?: string;
 		error?: Error;
-		dev: boolean;
 	}
 
 	export type Preload<T=Props> = (req: Request, context: Context) => Promisable<T>;

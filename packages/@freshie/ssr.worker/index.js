@@ -129,7 +129,7 @@ export async function run(event) {
 	const path = decode ? decodeURIComponent(pathname) : pathname;
 	const req = { url, method, headers, path, query, search, params:{}, body:null };
 
-	let page={}, context = { status: 0, ssr: true, dev: __DEV__ };
+	let page={}, context={ status: 0 };
 	context.headers = { 'Content-Type': 'text/html;charset=utf-8' };
 
 	try {
