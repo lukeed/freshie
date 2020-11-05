@@ -47,6 +47,8 @@ exports.rollup = function (config, context, options) {
 		);
 	}
 
+	options.postcss.server = context.ssr;
+
 	// route-based CSS chunking/code-splitting
 	options.postcss.extract = function (filename) {
 		const relative = filename.replace(entries['~routes'], '');

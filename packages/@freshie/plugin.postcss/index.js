@@ -60,7 +60,7 @@ function less(filename, filedata, sourcemap, options={}) {
 }
 
 module.exports = function (opts={}) {
-	const { plugins=[], assets, extract, sourcemap, ...rest } = opts;
+	const { plugins=[], assets, extract, sourcemap, server, ...rest } = opts;
 
 	let toExtract = false;
 	const FILES = new Map, REFS = new Map;
@@ -153,20 +153,23 @@ module.exports = function (opts={}) {
 			const content = (FILES.get(file) || '') + output.css;
 			FILES.set(file, content); // full asset source
 
-			const ref = REFS.get(file) || this.emitFile({
-				type: 'asset',
-				// sets `source` later
-				name: basename(file),
-			});
+			let loader = '';
 
-			REFS.set(file, ref);
+			if (!server) {
+				const ref = REFS.get(file) || this.emitFile({
+					type: 'asset',
+					// sets `source` later
+					name: basename(file),
+				});
 
-			let loader = `
-				import { link } from "${RUNTIME}";
-				link(import.meta.ROLLUP_FILE_URL_${ref});
-			`;
+				REFS.set(file, ref);
 
-			// TODO: only do this part for ssr
+				loader += `
+					import { link } from "${RUNTIME}";
+					link(import.meta.ROLLUP_FILE_URL_${ref});
+				`;
+			}
+
 			for (let key in Manifest) {
 				loader += `\nexport const ${key} = ${JSON.stringify(Manifest[key])};`;
 			}
@@ -178,6 +181,7 @@ module.exports = function (opts={}) {
 		},
 
 		renderStart() {
+			if (server) return;
 			for (let [file, ref] of REFS) {
 				let content = FILES.get(file);
 				this.setAssetSource(ref, content);
