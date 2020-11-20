@@ -4,7 +4,7 @@ import type { Props } from 'freshie';
 export const router: Router;
 
 declare namespace DOM {
-	export type Render<T=unknown> = (Tag: T, props: Props, target: HTMLElement) => void;
+	export type Render<T=any> = (Tags: T[], props: Props, target: HTMLElement) => void;
 }
 
 export interface Options {
