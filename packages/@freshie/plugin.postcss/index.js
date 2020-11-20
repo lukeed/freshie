@@ -70,9 +70,14 @@ module.exports = function (opts={}) {
 
 	const toMap = sourcemap != null && !!sourcemap;
 	const RUNTIME = require.resolve('./runtime.js');
+	const IDENT = '!!~freshie.postcss.runtime~!!';
 
 	return {
 		name: 'freshie/postcss',
+
+		resolveId(id) {
+			return id === IDENT ? RUNTIME : null;
+		},
 
 		load(id) {
 			if (!/\.(css|s[ac]ss|less|styl(us)?)$/.test(id)) return null;
@@ -165,7 +170,7 @@ module.exports = function (opts={}) {
 				REFS.set(file, ref);
 
 				loader += `
-					import { link } from "${RUNTIME}";
+					import { link } from "${IDENT}";
 					link(import.meta.ROLLUP_FILE_URL_${ref});
 				`;
 			}
