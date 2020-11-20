@@ -23,7 +23,10 @@ export function merge(old: Config.Options, nxt: ConfigData, context: Config.Cont
 		if (k === 'rollup') continue;
 		if (typeof nxt[k] === 'function') {
 			old[k] = old[k] || {};
-			nxt[k](old[k], context); // TODO? pass `old|options` 2nd
+			let val = nxt[k](old[k], context);
+			if (typeof old[k] === 'string' && typeof val === 'string') {
+				old[k] = val; // for publicPath (only)
+			}
 		} else {
 			old[k] = nxt[k] || old[k];
 		}
