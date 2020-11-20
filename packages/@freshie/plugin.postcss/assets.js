@@ -64,6 +64,12 @@ module.exports = postcss.plugin('freshie/postcss.assets', (opts={}) => {
 
 				tmp = tmp || inner;
 
+				if (tmp.charAt(0) === '/') {
+					tmp = open + tmp + close;
+					Cache.set(inner, tmp);
+					return tmp; // url(/...)
+				}
+
 				if (/^(https?:)?\/\//.test(tmp)) {
 					tmp = open + tmp + close;
 					Cache.set(inner, tmp);
