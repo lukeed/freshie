@@ -63,8 +63,8 @@ exports.rollup = function (config, context, options) {
 	// Apply `~assets` alias to url() contents
 	//=> support "~assets", "~@assets", or "@assets"
 	options.postcss.assets = function (value) {
-		if (/(\~?@|\~)assets[/]?/.test(value)) {
-			let tmp = value.replace(/(\~?@|\~)assets[/]?/, '');
+		if (/(\~?@|\~)assets[\\\/]+?/.test(value)) {
+			let tmp = value.replace(/(\~?@|\~)assets[\\\/]+?/, '');
 			return join(entries['~assets'], tmp);
 		}
 	};
