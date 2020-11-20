@@ -48,6 +48,24 @@ export function HTML(template: string, opts: Options = {}): Rollup.Plugin {
 
 			let document = parse(await fs.read(template, 'utf8'));
 
+			// TODO: meta tags
+			document.querySelectorAll('link,script').forEach(elem => {
+				let { src, href } = elem.rawAttributes;
+				// ignore external asset path(s) – not ours
+				if (/^(https?:)?\/\//.test(href || src)) return;
+
+				let asset = href || src;
+				if (asset.startsWith('/')) {
+					asset = asset.substring(1);
+				}
+
+				// TODO: lookup MANIFEST for new/output filename
+				// use that, else rely on what's there + exists() check?
+				// eg; /styles.css => /abc123.css
+
+				elem.setAttribute(href ? 'href' : 'src', publicPath + asset);
+			});
+
 			// TODO? Throw error if empty
 			if (entryAssets.size > 0) {
 				const dochead = document.querySelector('head');
