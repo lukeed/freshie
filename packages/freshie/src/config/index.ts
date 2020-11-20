@@ -176,7 +176,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 			Plugin.HTTP,
 			Plugin.Router,
 			Plugin.Copy(options.copy),
-			Plugin.HTML(entries.html, options),
+			Plugin.HTML(entries.html, { ...options, minify }),
 			Plugin.Runtime(src, routes, errors, true),
 			require('@rollup/plugin-alias')(options.alias),
 			// Assets.Plugin,
