@@ -53,6 +53,9 @@
     "terser": "^5.6.0",
     "totalist": "^2.0.0"
   },
+  "engines": {
+    "node": ">=10"
+  },
   "peerDependencies": {
     "rollup": "^2.27.0"
   }
