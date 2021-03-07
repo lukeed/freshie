@@ -2,7 +2,6 @@ import * as fs from '../../utils/fs';
 import * as assert from '../../utils/assert';
 
 export function Template(file: string): Rollup.Plugin {
-	let entry: string;
 	const ident = '!!~html~!!';
 
 	return {

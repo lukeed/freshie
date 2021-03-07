@@ -83,11 +83,7 @@ declare namespace Config {
 			indent: string;
 		}>;
 
-		terser: Subset<{
-			mangle: boolean;
-			compress: boolean;
-			output: Dict<any>;
-		}>;
+		terser: import('terser').MinifyOptions;
 	}
 
 	interface Context {
