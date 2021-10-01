@@ -9,9 +9,9 @@ declare module 'freshie' {
 	// ---
 
 	export namespace Config {
-		type Rollup = Partial<import('rollup').RollupOptions> & {
-			output: import('rollup').OutputOptions
-		};
+		// type Rollup = Partial<import('rollup').RollupOptions> & {
+		// 	output: import('rollup').OutputOptions
+		// };
 
 		interface Options extends Dict<any> {
 			publicPath: string;
@@ -55,18 +55,19 @@ declare module 'freshie' {
 
 			resolve: Subset<{
 				extensions: string[];
+				conditions: string[];
 				mainFields: string[];
 			}>;
 
-			commonjs: Subset<{
-				extensions: string[];
-			}>;
+			// commonjs: Subset<{
+			// 	extensions: string[];
+			// }>;
 
-			json: Subset<{
-				preferConst: boolean;
-				namedExports: boolean;
-				indent: string;
-			}>;
+			// json: Subset<{
+			// 	preferConst: boolean;
+			// 	namedExports: boolean;
+			// 	indent: string;
+			// }>;
 
 			terser: Subset<{
 				mangle: boolean;
