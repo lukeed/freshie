@@ -32,6 +32,9 @@
     "http",
     "env"
   ],
+  "engines": {
+    "node": ">=14"
+  },
   "dependencies": {
     "@freshie/ssr.node": "workspace:*",
     "@rollup/plugin-alias": "^3.1.0",
