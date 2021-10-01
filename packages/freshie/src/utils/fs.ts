@@ -1,16 +1,17 @@
-import * as fs from 'fs';
-import { promisify } from 'util';
+import { existsSync, statSync } from 'fs';
+import { promises as fs } from 'fs';
 
-export { premove as remove } from 'premove';
+export async function remove(input: string): Promise<void> {
+	return isDir(input) ? fs.rmdir(input) : fs.unlink(input);
+}
 
-export const read = promisify(fs.readFile);
-export const write = promisify(fs.writeFile);
-export const list = promisify(fs.readdir);
-
-export const exists = fs.existsSync;
+export const list = fs.readdir;
+export const exists = existsSync;
+export const write = fs.writeFile;
+export const read = fs.readFile;
 
 export function isDir(str: string): boolean {
-	return exists(str) && fs.statSync(str).isDirectory();
+	return exists(str) && statSync(str).isDirectory();
 }
 
 export function match(arr: string[], pattern: RegExp): string | void {
