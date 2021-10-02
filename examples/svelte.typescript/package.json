@@ -6,7 +6,6 @@
   },
   "devDependencies": {
     "@freshie/plugin.postcss": "workspace:*",
-    "@freshie/plugin.typescript": "workspace:*",
     "@freshie/ssr.node": "workspace:*",
     "@freshie/ui.svelte": "workspace:*",
     "freshie": "workspace:*",
