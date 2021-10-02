@@ -6,7 +6,10 @@ import { load } from '../config';
 import type { Argv, Rollup } from '../internal';
 import type { Config } from 'freshie';
 
-async function compile(rollup: typeof import('rollup').rollup, config: Config.Rollup): Promise<Rollup.Output> {
+let rollup: typeof import('rollup').rollup;
+
+async function compile(config: Config.Rollup): Promise<Rollup.Output> {
+	rollup = rollup || require('rollup').rollup;
 	return rollup(config).then(b => b.write(config.output));
 }
 
@@ -21,11 +24,9 @@ export default async function (src: Nullable<string>, argv: Partial<Argv.Options
 			await fs.remove(argv.dest);
 		}
 
-		const { rollup } = require('rollup');
-
 		// TODO: Add Manifest | HTML to Client
-		await compile(rollup, config.client);
-		if (config.server) await compile(rollup, config.server);
+		await compile(config.client);
+		if (config.server) await compile(config.server);
 		log.success('Build complete! 🎉');
 	} catch (err) {
 		log.bail(err);
