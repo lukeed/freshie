@@ -1,0 +1,13 @@
+{
+  "version": "0.0.0",
+  "name": "@freshie/plugin.terser",
+  "dependencies": {
+    "terser": "^5.6.0"
+  },
+  "peerDependencies": {
+    "freshie": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
