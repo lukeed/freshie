@@ -2,7 +2,7 @@ const { transpileModule } = require('typescript');
 const tsconfig = require('../tsconfig.json');
 const { build } = require('./util');
 
-const terser = require('rollup-plugin-terser').terser();
+const terser = require('@freshie/plugin.terser').terser();
 const resolve = require('@rollup/plugin-node-resolve').default({
 	extensions: ['.ts', '.mjs', '.js', '.json']
 });
