@@ -3,6 +3,9 @@ import { totalist } from 'totalist';
 import escalade from 'escalade';
 import { exists } from './fs';
 
+import type { Build } from '../internal';
+import type { Config } from 'freshie';
+
 // UNUSED - inlined directly in runtimes
 export function match(code: number, dict: Dict<unknown>) {
 	const key = String(code);

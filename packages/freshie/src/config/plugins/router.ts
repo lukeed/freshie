@@ -1,5 +1,7 @@
 import { join } from 'path';
 
+import type { Rollup } from '../../internal';
+
 const DIR_ENV = join(__dirname, '..', 'env', 'index.mjs');
 const DIR_HTTP = join(__dirname, '..', 'http', 'index.mjs');
 const DIR_ROUTER = join(__dirname, '..', 'router', 'index.mjs');

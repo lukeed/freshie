@@ -3,6 +3,8 @@ import { resolve } from 'path';
 import * as assert from 'uvu/assert';
 import * as utils from '../argv';
 
+import type { Argv } from '../../internal';
+
 const toBool = suite('toBool');
 
 toBool('should be a function', () => {

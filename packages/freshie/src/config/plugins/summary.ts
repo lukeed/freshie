@@ -7,6 +7,8 @@ import { gzipSync } from 'zlib';
 import * as pretty from '../../utils/pretty';
 import * as log from '../../utils/log';
 
+import type { Rollup } from '../../internal';
+
 type Options = Record<'brotli'|'isDOM', boolean>;
 type Padding = (str: string, max: number) => string;
 type Stats = Record<'file'|'size'|'gzip', string> & { notice: number };

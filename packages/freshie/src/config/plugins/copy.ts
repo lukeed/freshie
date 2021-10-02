@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { totalist } from 'totalist';
 import { exists } from '../../utils/fs';
+import type { Rollup } from '../../internal';
 
 export function Copy(dirs: string[] = []): Rollup.Plugin {
 	return {

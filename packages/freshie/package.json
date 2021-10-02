@@ -44,6 +44,7 @@
     "klona": "^2.0.0",
     "navaid": "^1.2.0",
     "node-html-parser": "^4.1.5",
+    "rollup": "^2.58.0",
     "rollup-route-manifest": "^1.0.0",
     "route-sort": "^1.0.0",
     "sade": "^1.7.0",

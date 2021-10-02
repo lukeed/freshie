@@ -1,6 +1,9 @@
 import { join } from 'path';
 import * as fs from './fs';
 
+import type { Build } from '../internal';
+import type { Config } from 'freshie';
+
 export async function collect(src: string, options: Config.Options): Promise<Build.Entries> {
 	const entries = await fs.list(src).then(files => {
 		// dom: index.{ext} || index.dom.{ext}

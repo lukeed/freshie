@@ -1,6 +1,8 @@
 import { join } from 'path';
 import * as fs from '../../utils/fs';
 
+import type { Build, Rollup } from '../../internal';
+
 const RUNTIME = join(__dirname, '..', 'runtime', 'index.dom.js');
 
 async function xform(src: string, file: string, routes: Build.Route[], errors: Build.Error[], isDOM: boolean): Promise<string> {

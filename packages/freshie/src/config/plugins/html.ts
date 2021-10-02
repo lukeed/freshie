@@ -1,5 +1,5 @@
 import * as fs from '../../utils/fs';
-
+import type { Rollup } from '../../internal';
 import type { HTMLElement } from 'node-html-parser';
 
 function toPreload(href: string, type: 'script' | 'style' | 'image' | 'font'): string {

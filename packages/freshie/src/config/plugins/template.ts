@@ -1,6 +1,8 @@
 import * as fs from '../../utils/fs';
 import * as assert from '../../utils/assert';
 
+import type { Rollup } from '../../internal';
+
 export function Template(file: string): Rollup.Plugin {
 	const ident = '!!~html~!!';
 

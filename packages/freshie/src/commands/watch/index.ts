@@ -4,6 +4,8 @@ import * as fs from '../../utils/fs';
 import { load } from '../../config';
 import Watcher from './watcher';
 
+import type { Argv } from '../../internal';
+
 export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
 	normalize(src, argv, { isProd: false });
 

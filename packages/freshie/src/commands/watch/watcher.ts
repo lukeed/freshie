@@ -1,6 +1,8 @@
 import { relative } from 'path';
 // import HTML from './html';
 
+import type { Argv, Rollup } from '../../internal';
+
 /**
  * Create a Watcher from base config
  * @param config {import('rollup').RollupWatchOptions}

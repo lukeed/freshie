@@ -3,6 +3,9 @@ import * as log from '../utils/log';
 import * as fs from '../utils/fs';
 import { load } from '../config';
 
+import type { Argv, Rollup } from '../internal';
+import type { Config } from 'freshie';
+
 async function compile(rollup: typeof import('rollup').rollup, config: Config.Rollup): Promise<Rollup.Output> {
 	return rollup(config).then(b => b.write(config.output));
 }

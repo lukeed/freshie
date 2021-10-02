@@ -1,3 +1,5 @@
+import type { Config } from 'freshie';
+
 export const defaults: Config.Options = {
 	publicPath: '/',
 
@@ -42,6 +44,7 @@ export const defaults: Config.Options = {
 
 	resolve: {
 		extensions: ['.mjs', '.js', '.jsx', '.json'],
+		conditions: [], // todo
 		mainFields: ['module', 'jsnext', 'jsnext:main', 'main'],
 	},
 

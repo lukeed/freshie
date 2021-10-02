@@ -4,6 +4,9 @@ import escalade from 'escalade';
 import rsort from 'route-sort';
 import { exists } from './fs';
 
+import type { Build } from '../internal';
+import type { Config } from 'freshie';
+
 // 0=static, 1=param, 2=wild
 export const enum Pattern {
 	Static,

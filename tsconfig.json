@@ -8,16 +8,22 @@
     }
   },
   "compilerOptions": {
+    "noEmit": true,
     "target": "esnext",
     "module": "esnext",
     "noImplicitAny": true,
+    "removeComments": true,
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "removeComments": true,
+    "esModuleInterop": false,
+    "isolatedModules": true,
     "sourceMap": false,
     "allowJs": true,
-    "noEmit": true
+    "baseUrl": ".",
+    "paths": {
+      "freshie": ["./packages/freshie/index.d.ts"]
+    }
   },
   "include": [
     "packages"

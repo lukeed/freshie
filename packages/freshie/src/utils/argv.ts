@@ -1,6 +1,8 @@
 import { join, resolve } from 'path';
 import { isDir } from './fs';
 
+import type { Argv } from '../internal';
+
 // default = true
 export function toBool(val?: unknown, fallback = true) {
 	return val == null ? fallback : !/(0|false)/.test(val as string);

@@ -6,6 +6,8 @@ import * as log from '../utils/log';
 import { defaults } from './options';
 import * as Plugin from './plugins';
 
+import type { Config } from 'freshie';
+import type { Argv, Build } from '../internal';
 import type { Asset } from 'rollup-route-manifest';
 
 type ConfigData = Partial<Config.Customize.Options> & {
@@ -14,11 +16,11 @@ type ConfigData = Partial<Config.Customize.Options> & {
 
 interface ConfigPair {
 	options: Config.Options;
-	context: Config.Context;
+	context: Build.Context;
 }
 
 // modified pwa/core util
-export function merge(old: Config.Options, nxt: ConfigData, context: Config.Context) {
+export function merge(old: Config.Options, nxt: ConfigData, context: Build.Context) {
 	for (let k in nxt) {
 		if (k === 'rollup') continue;
 		if (typeof nxt[k] === 'function') {
@@ -36,7 +38,7 @@ export function merge(old: Config.Options, nxt: ConfigData, context: Config.Cont
 function assemble(configs: ConfigData[], argv: Argv.Options, ssr = false): ConfigPair {
 	const options = klona(defaults);
 	const { src, minify, isProd, cwd, sourcemap } = argv;
-	const context: Config.Context = { ssr, minify, isProd, sourcemap, src, cwd };
+	const context: Build.Context = { ssr, minify, isProd, sourcemap, src, cwd };
 	configs.forEach(tmp => merge(options, tmp, context));
 
 	const aliases = options.alias.entries;
@@ -113,7 +115,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	// build DOM configuration
 	const client = Client(argv, routes, entries, errors, DOM.options, DOM.context);
 
-	let server: Rollup.Config;
+	let server: Config.Rollup;
 
 	// force node for dev
 	if (argv.ssr && !isProd) {
@@ -153,7 +155,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	return { options, client, server };
 }
 
-export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
+export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Build.Context): Config.Rollup {
 	const { src, isProd, minify, sourcemap } = context;
 
 	return {
@@ -216,7 +218,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 	};
 }
 
-export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Config.Context): Rollup.Config {
+export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Build.Context): Config.Rollup {
 	const { src, isProd, minify, sourcemap } = context;
 
 	const template = join(argv.dest, 'client', 'index.html');
