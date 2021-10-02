@@ -212,7 +212,6 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 				}
 			}),
 			require('@rollup/plugin-commonjs')(options.commonjs),
-			minify && Plugin.Terser(options.terser)
 		]
 	};
 }
@@ -257,7 +256,6 @@ export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build
 				...options.json
 			}),
 			require('@rollup/plugin-commonjs')(options.commonjs),
-			minify && Plugin.Terser(options.terser)
 		]
 	};
 }

@@ -53,13 +53,5 @@ export const defaults: Config.Options = {
 		preferConst: true,
 		namedExports: true,
 		indent: '  ',
-	},
-
-	terser: {
-		mangle: true,
-		compress: true,
-		output: {
-			comments: false
-		}
 	}
 }

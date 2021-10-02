@@ -68,12 +68,6 @@ declare module 'freshie' {
 			// 	namedExports: boolean;
 			// 	indent: string;
 			// }>;
-
-			terser: Subset<{
-				mangle: boolean;
-				compress: boolean;
-				output: Dict<any>;
-			}>;
 		}
 
 		interface Context {
