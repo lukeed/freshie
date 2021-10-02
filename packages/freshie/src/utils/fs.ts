@@ -2,7 +2,11 @@ import { existsSync, statSync } from 'fs';
 import { promises as fs } from 'fs';
 
 export async function remove(input: string): Promise<void> {
-	return isDir(input) ? fs.rmdir(input) : fs.unlink(input);
+	try {
+		return statSync(input).isDirectory() ? fs.rmdir(input) : fs.unlink(input);
+	} catch (err) {
+		//
+	}
 }
 
 export const list = fs.readdir;
