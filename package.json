@@ -9,9 +9,10 @@
     "test": "uvu -r tsm packages __tests__ -i fixtures"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "devDependencies": {
+    "@types/node": "16.10.2",
     "tsm": "2.0.0-next.2",
     "typescript": "4.4.3",
     "uvu": "0.5.1"

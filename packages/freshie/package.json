@@ -33,7 +33,7 @@
     "env"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=14.14"
   },
   "dependencies": {
     "@freshie/ssr.node": "workspace:*",
