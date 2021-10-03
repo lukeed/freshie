@@ -13,11 +13,11 @@ async function compile(config: Config.Rollup): Promise<Rollup.Output> {
 	return rollup(config).then(b => b.write(config.output));
 }
 
-export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
+export default async function (argv: Argv) {
 	try {
-		normalize(src, argv, { isProd: true });
+		normalize(argv, true);
 
-		const config = await load(argv as Argv.Options).catch(log.bail);
+		let config = await load(argv);
 
 		if (fs.exists(argv.dest)) {
 			log.warn(`Removing "${ log.$dir(argv.destDir) }" directory`);

@@ -8,7 +8,7 @@ import type { Argv, Rollup } from '../../internal';
  * @param config {import('rollup').RollupWatchOptions}
  * @returns {import('rollup').RollupWatcher}
  */
-export default function (config: Rollup.Config, argv: Argv.Options): Rollup.Watcher {
+export default function (config: Rollup.Config, argv: Required<Argv>): Rollup.Watcher {
 	const { src, dest } = argv;
 	// const { onUpdate, onError } = TODO;
 	// const hasMap = !!config.output.sourcemap;

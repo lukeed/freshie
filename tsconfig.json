@@ -9,7 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": false,
-    "isolatedModules": true,
     "sourceMap": false,
     "allowJs": true,
     "baseUrl": ".",

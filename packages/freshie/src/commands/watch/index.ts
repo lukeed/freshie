@@ -6,15 +6,15 @@ import Watcher from './watcher';
 
 import type { Argv } from '../../internal';
 
-export default async function (src: Nullable<string>, argv: Partial<Argv.Options>) {
-	normalize(src, argv, { isProd: false });
+export default async function (argv: Argv) {
+	normalize(argv, false);
 
-	const config = await load(argv as Argv.Options).catch(log.bail);
+	let config = await load(argv).catch(log.bail);
 
 	if (fs.exists(argv.dest)) {
 		log.warn(`Removing "${ log.$dir(argv.destDir) }" directory`);
 		await fs.remove(argv.dest);
 	}
 
-	Watcher(config.client, argv as Argv.Options);
+	Watcher(config.client, argv);
 }

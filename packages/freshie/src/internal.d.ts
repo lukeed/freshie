@@ -4,20 +4,16 @@ declare global {
 	type Dict<T> = Record<string, T>;
 }
 
-export namespace Argv {
-	interface Options {
-		cwd: string;
-		minify: boolean;
-		sourcemap: boolean;
-		ssr: boolean;
-		//
-		src: string;
-		dest: string;
-		srcDir: string;
-		destDir: string;
-		//
-		isProd: boolean;
-	}
+export interface Argv {
+	cwd: string;
+	minify?: boolean;
+	sourcemap?: boolean;
+	ssr?: boolean;
+	src?: string;
+	dest?: string;
+	srcDir?: string;
+	destDir?: string;
+	isProd?: boolean;
 }
 
 export namespace Build {

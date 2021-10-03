@@ -19,7 +19,6 @@ toBool('should parse `false` values', () => {
 });
 
 toBool('should return `fallback` otherwise (default = true)', () => {
-	assert.is(utils.toBool(), true);
 	assert.is(utils.toBool(''), true);
 	assert.is(utils.toBool(null), true);
 	assert.is(utils.toBool(undefined), true);
@@ -43,9 +42,9 @@ normalize('should be a function', () => {
 	assert.type(utils.normalize, 'function');
 });
 
-normalize('should ensure `Argv.Options` has values', () => {
-	const input: Partial<Argv.Options> = {};
-	const output = utils.normalize(null, input);
+normalize('should ensure `Argv` has values', () => {
+	const input: Partial<Argv> = {};
+	const output = utils.normalize(input as Argv, false);
 	assert.is(output, undefined, 'returns nothing');
 
 	const cwd = resolve('.');
@@ -63,17 +62,17 @@ normalize('should ensure `Argv.Options` has values', () => {
 	assert.is(input.minify, false);
 });
 
-normalize('should accept `Argv.Options` partial values', () => {
-	const input: Partial<Argv.Options> = {
+normalize('should accept `Argv` partial values', () => {
+	const input: Argv = {
 		cwd: __dirname,
 		minify: true,
 	};
 
-	utils.normalize('hello', input);
+	utils.normalize(input, false);
 
 	assert.is(input.cwd, __dirname);
 
-	assert.is(input.srcDir, 'hello');
+	assert.is(input.srcDir, 'src');
 	assert.is(input.destDir, 'build');
 
 	assert.is(input.src, __dirname); // "{cwd}/src" missing
@@ -82,27 +81,27 @@ normalize('should accept `Argv.Options` partial values', () => {
 	assert.is(input.ssr, true);
 	assert.is(input.isProd, false);
 	assert.is(input.sourcemap, true); // isProd = false
-	assert.is(input.minify, false); // isProd = false
+	assert.is(input.minify, true); // respect input
 });
 
 normalize('should accept extra values', () => {
-	const input: Partial<Argv.Options> = {};
-	utils.normalize('', input, { isProd: true });
+	const input: Partial<Argv> = {};
+	utils.normalize(input as Argv, true);
 	assert.is(input.isProd, true);
 	assert.is(input.sourcemap, false);
 	assert.is(input.minify, true);
 });
 
 normalize('should allow `minify` to be disabled in production', () => {
-	const input: Partial<Argv.Options> = {};
-	utils.normalize('', input, { isProd: true, minify: false });
+	const input: Partial<Argv> = { minify: false };
+	utils.normalize(input as Argv, true);
 	assert.is(input.isProd, true);
 	assert.is(input.minify, false);
 });
 
 normalize('should allow `sourcemap` to be enabled in production', () => {
-	const input: Partial<Argv.Options> = {};
-	utils.normalize('', input, { isProd: true, sourcemap: true });
+	const input: Partial<Argv> = { sourcemap: true };
+	utils.normalize(input as Argv, true);
 	assert.is(input.isProd, true);
 	assert.is(input.sourcemap, true);
 });

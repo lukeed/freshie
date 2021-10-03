@@ -1,32 +1,24 @@
 import { join, resolve } from 'path';
-import { isDir } from './fs';
+import * as fs from './fs';
 
 import type { Argv } from '../internal';
 
 // default = true
-export function toBool(val?: unknown, fallback = true) {
+export function toBool(val: unknown, fallback = true) {
 	return val == null ? fallback : !/(0|false)/.test(val as string);
 }
 
-export function normalize(src: Nullable<string>, argv: Partial<Argv.Options>, extra: Partial<Argv.Options> = {}) {
-	Object.assign(argv, extra);
+export function normalize(argv: Argv, isProd: boolean): asserts argv is Required<Argv> {
 	const cwd = argv.cwd = resolve(argv.cwd || '.');
+	argv.dest = join(cwd, argv.destDir='build');
+	argv.src = join(cwd, argv.srcDir='src');
 
-	argv.dest = join(cwd, argv.destDir = 'build');
-	argv.src = join(cwd, argv.srcDir = src || 'src');
+	argv.isProd = isProd;
 
-	// use root if "/src" does not exist
-	argv.src = isDir(argv.src) ? argv.src : cwd;
+	// use cwd if "/src" does not exist
+	argv.src = fs.isDir(argv.src) ? argv.src : cwd;
 
-	// default = false
-	argv.isProd = !!argv.isProd;
-
-	// default = true
 	argv.ssr = toBool(argv.ssr, true);
-
-	// default = (dev) false; (prod) true
-	argv.minify = argv.isProd && toBool(argv.minify, true);
-
-	// default = (dev) true; (prod) false
-	argv.sourcemap = toBool(argv.sourcemap, !argv.isProd);
+	argv.minify = toBool(argv.minify, isProd);
+	argv.sourcemap = toBool(argv.sourcemap, !isProd);
 }

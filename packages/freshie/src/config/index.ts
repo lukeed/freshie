@@ -35,7 +35,7 @@ export function merge(old: Config.Options, nxt: ConfigData, context: Build.Conte
 	}
 }
 
-function assemble(configs: ConfigData[], argv: Argv.Options, ssr = false): ConfigPair {
+function assemble(configs: ConfigData[], argv: Required<Argv>, ssr = false): ConfigPair {
 	const options = klona(defaults);
 	const { src, minify, isProd, cwd, sourcemap } = argv;
 	const context: Build.Context = { ssr, minify, isProd, sourcemap, src, cwd };
@@ -64,7 +64,7 @@ function assemble(configs: ConfigData[], argv: Argv.Options, ssr = false): Confi
 }
 
 // TODO: save `merge` functions and apply twice (ssr vs dom)
-export async function load(argv: Argv.Options): Promise<Config.Group> {
+export async function load(argv: Required<Argv>): Promise<Config.Group> {
 	const { cwd, src, isProd } = argv;
 
 	const file = utils.load<ConfigData>('freshie.config.js', cwd);
@@ -155,7 +155,7 @@ export async function load(argv: Argv.Options): Promise<Config.Group> {
 	return { options, client, server };
 }
 
-export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Build.Context): Config.Rollup {
+export function Client(argv: Required<Argv>, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Build.Context): Config.Rollup {
 	const { src, isProd, minify, sourcemap } = context;
 
 	return {
@@ -218,7 +218,7 @@ export function Client(argv: Argv.Options, routes: Build.Route[], entries: Build
 	};
 }
 
-export function Server(argv: Argv.Options, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Build.Context): Config.Rollup {
+export function Server(argv: Required<Argv>, routes: Build.Route[], entries: Build.Entries, errors: Build.Error[], options: Config.Options, context: Build.Context): Config.Rollup {
 	const { src, isProd, minify, sourcemap } = context;
 
 	const template = join(argv.dest, 'client', 'index.html');
