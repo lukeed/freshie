@@ -1,12 +1,4 @@
 {
-  "ts-node": {
-    "transpileOnly": true,
-    "compilerOptions": {
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "sourceMap": true
-    }
-  },
   "compilerOptions": {
     "noEmit": true,
     "target": "esnext",
