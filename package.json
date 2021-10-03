@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node build",
     "types": "tsc --noEmit --skipLibCheck",
-    "test": "uvu -r tsm packages __tests__ -i fixtures"
+    "test": "uvu packages \".test.ts$\" -r tsm"
   },
   "engines": {
     "node": ">=14"

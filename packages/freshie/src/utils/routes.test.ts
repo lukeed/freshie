@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import * as utils from '../routes';
+import * as utils from './routes';
 
 const toSegment = suite('to_segment');
 

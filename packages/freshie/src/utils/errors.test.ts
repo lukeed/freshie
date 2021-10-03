@@ -1,6 +1,6 @@
 import { suite } from 'uvu';
 import * as assert from 'uvu/assert';
-import * as utils from '../errors';
+import * as utils from './errors';
 
 const match = suite('match', {
 	'401': '401',

@@ -1,7 +1,7 @@
 import { suite } from 'uvu';
 import { join, isAbsolute } from 'path';
 import * as assert from 'uvu/assert';
-import * as utils from '../fs';
+import * as utils from './fs';
 
 const read = suite('read');
 
