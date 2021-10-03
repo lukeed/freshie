@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "node build",
-    "pretest": "tsc --noEmit --skipLibCheck",
+    "types": "tsc --noEmit --skipLibCheck",
     "test": "uvu -r tsm packages __tests__ -i fixtures"
   },
   "engines": {
