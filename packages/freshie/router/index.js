@@ -1,1 +1,1 @@
-module.exports = require('navaid');
+export { default } from 'navaid';

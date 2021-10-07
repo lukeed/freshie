@@ -1,1 +1,1 @@
-module.exports = require('httpie');
+export * from 'httpie';

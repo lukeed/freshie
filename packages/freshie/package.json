@@ -9,18 +9,9 @@
   "exports": {
     "./runtime": "./runtime",
     "./package.json": "./package.json",
-    "./router": {
-      "import": "./router/index.js",
-      "require": "./router/index.cjs"
-    },
-    "./http": {
-      "import": "./http/index.js",
-      "require": "./http/index.cjs"
-    },
-    "./env": {
-      "import": "./env/index.js",
-      "require": "./env/index.cjs"
-    }
+    "./router": "./router/index.js",
+    "./http": "./http/index.js",
+    "./env": "./env/index.js"
   },
   "files": [
     "*.d.ts",
