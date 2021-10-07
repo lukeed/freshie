@@ -18,12 +18,12 @@ jobs:
     - name: (env) pnpm
       run: curl -L https://pnpm.js.org/pnpm.js | node - add --global pnpm
 
-    # - name: (env) cache
-    #   uses: actions/cache@v2
-    #   with:
-    #     path: ~/.pnpm-store
-    #     key: ${{ runner.os }}-${{ matrix.nodejs }}-${{ hashFiles('**/package.json') }}
-    #     restore-keys: ${{ runner.os }}-${{ matrix.nodejs }}-
+    - name: (env) cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.pnpm-store
+        key: ${{ runner.os }}-${{ matrix.nodejs }}-${{ hashFiles('**/package.json') }}
+        restore-keys: ${{ runner.os }}-${{ matrix.nodejs }}-
 
     - name: Install
       run: pnpm install
