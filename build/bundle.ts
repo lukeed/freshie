@@ -168,7 +168,7 @@ export async function foobar(modname: string, inputs: Mapping) {
 				output.forEach(item => {
 					if (item.type !== 'chunk') return;
 					let buffer = encoder.encode(item.code);
-					outputs.push(utils.inspect(item.name, buffer));
+					outputs.push(utils.inspect(item.fileName, buffer));
 				});
 			}
 		})
