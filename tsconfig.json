@@ -16,7 +16,7 @@
     "noImplicitAny": true,
     "alwaysStrict": true,
     "module": "esnext",
-    "checkJs": true,
+    "checkJs": false,
     "noEmit": true,
     "paths": {
       "freshie": ["./packages/freshie/index.d.ts"]
