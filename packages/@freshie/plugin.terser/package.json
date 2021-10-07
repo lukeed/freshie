@@ -4,9 +4,6 @@
   "dependencies": {
     "terser": "^5.6.0"
   },
-  "peerDependencies": {
-    "freshie": "*"
-  },
   "publishConfig": {
     "access": "public"
   }

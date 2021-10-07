@@ -2,25 +2,24 @@
   "name": "freshie",
   "version": "0.0.8",
   "repository": "lukeed/freshie",
-  "license": "MIT",
   "types": "index.d.ts",
-  "bin": {
-    "freshie": "bin.js"
-  },
+  "type": "module",
+  "bin": "bin.js",
+  "license": "MIT",
   "exports": {
-    "./package.json": "./package.json",
     "./runtime": "./runtime",
+    "./package.json": "./package.json",
     "./router": {
-      "import": "./router/index.mjs",
-      "require": "./router/index.js"
+      "import": "./router/index.js",
+      "require": "./router/index.cjs"
     },
     "./http": {
-      "import": "./http/index.mjs",
-      "require": "./http/index.js"
+      "import": "./http/index.js",
+      "require": "./http/index.cjs"
     },
     "./env": {
-      "import": "./env/index.mjs",
-      "require": "./env/index.js"
+      "import": "./env/index.js",
+      "require": "./env/index.cjs"
     }
   },
   "files": [

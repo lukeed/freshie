@@ -1,25 +1,34 @@
 {
   "compilerOptions": {
-    "noEmit": true,
-    "target": "esnext",
-    "module": "esnext",
-    "noImplicitAny": true,
-    "removeComments": true,
-    "moduleResolution": "node",
-    "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": false,
-    "sourceMap": false,
+    "strict": true,
     "allowJs": true,
-    "baseUrl": ".",
+    "lib": ["es2019"],
+    "target": "es2019",
+    "esModuleInterop": false,
+    "moduleResolution": "node",
+    "strictBindCallApply": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictFunctionTypes": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "module": "esnext",
+    "checkJs": true,
+    "noEmit": true,
     "paths": {
       "freshie": ["./packages/freshie/index.d.ts"]
     }
   },
   "include": [
-    "packages"
+    "@types",
+    "packages",
+    "build"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "packages/*/*.js"
   ]
 }
