@@ -3,15 +3,14 @@
   "version": "0.0.8",
   "repository": "lukeed/freshie",
   "types": "index.d.ts",
-  "type": "module",
   "bin": "bin.js",
   "license": "MIT",
   "exports": {
     "./runtime": "./runtime",
     "./package.json": "./package.json",
-    "./router": "./router/index.js",
-    "./http": "./http/index.js",
-    "./env": "./env/index.js"
+    "./router": "./router/index.mjs",
+    "./http": "./http/index.mjs",
+    "./env": "./env/index.mjs"
   },
   "files": [
     "*.d.ts",
