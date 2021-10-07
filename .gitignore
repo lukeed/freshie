@@ -6,3 +6,5 @@ node_modules
 
 examples/**/build/**
 packages/**/build/**
+packages/freshie/bin.js
+packages/freshie/core.js

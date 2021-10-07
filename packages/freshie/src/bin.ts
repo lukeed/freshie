@@ -1,10 +1,11 @@
-#!/usr/bin/env node
 const argv = require('mri')(process.argv.slice(2), {
 	default: {
 		'C': '.',
 	},
 	boolean: [
-		'minify', 'sourcemap', 'ssr'
+		'minify',
+		'sourcemap',
+		'ssr',
 	],
 	alias: {
 		'C': 'cwd',
@@ -44,18 +45,24 @@ if (argv.h) {
 	process.exit(0);
 }
 
+function bail(msg: string): never {
+	console.error('ERROR', msg);
+	process.exit(1);
+}
+
 (async function () {
+	let name: string = (argv._[0] as string || '').trim().toLowerCase();
+	if (!name) return bail('Missing <command> argument');
+
+	type Command = keyof typeof import('./core');
+	let command = require('./core')[name as Command];
+	if (!command) return bail(`Unknown "${name}" command`);
+
 	try {
-		let name = (argv._[0] || '').trim().toLowerCase();
-		if (!name) throw new Error('Missing <command> argument');
-
-		let command = require('.')[name];
-		if (!command) throw new Error(`Unknown "${name}" command`);
-
 		argv._ = argv._.slice(1);
 		await command(argv);
 	} catch (err) {
-		console.error('ERROR', err.stack);
-		process.exit(1);
+		let e = err as Error;
+		return bail(e.stack || e.message);
 	}
 })();

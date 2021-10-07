@@ -1,3 +1,1 @@
-declare module 'freshie/router' {
-	export * from 'navaid';
-}
+export * from 'navaid';
