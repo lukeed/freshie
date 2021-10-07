@@ -45,19 +45,24 @@ if (argv.h) {
 	process.exit(0);
 }
 
+function bail(msg: string): never {
+	console.error('ERROR', msg);
+	process.exit(1);
+}
+
 (async function () {
+	let name: string = (argv._[0] as string || '').trim().toLowerCase();
+	if (!name) return bail('Missing <command> argument');
+
+	type Command = keyof typeof import('./core');
+	let command = require('./core')[name as Command];
+	if (!command) return bail(`Unknown "${name}" command`);
+
 	try {
-		let name: string = (argv._[0] || '').trim().toLowerCase();
-		if (!name) throw new Error('Missing <command> argument');
-
-		// type Commands = keyof typeof import('./core');
-		// let command = await import('./core').then(m => m[name as Commands]);
-		// if (!command) throw new Error(`Unknown "${name}" command`);
-
 		argv._ = argv._.slice(1);
-		// await command(argv);
+		await command(argv);
 	} catch (err) {
-		console.error('ERROR', (err as Error).stack);
-		process.exit(1);
+		let e = err as Error;
+		return bail(e.stack || e.message);
 	}
 })();

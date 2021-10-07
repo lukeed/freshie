@@ -135,7 +135,7 @@ export async function load(argv: Required<Argv>): Promise<Config.Group> {
 			SSR.options.ssr = options.ssr;
 		}
 
-		if (uikit) {
+		if (uikit!) {
 			SSR.options.alias.entries['!!~ui~!!'] = utils.from(cwd, uikit);
 		} // else error?
 
@@ -180,40 +180,40 @@ export function Client(argv: Required<Argv>, routes: Build.Route[], entries: Bui
 			Plugin.Copy(options.copy),
 			Plugin.HTML(entries.html, { ...options, minify }),
 			Plugin.Runtime(src, routes, errors, true),
-			require('@rollup/plugin-alias')(options.alias),
-			// Assets.Plugin,
-			require('@rollup/plugin-replace')({
-				...options.replace,
-				'__BROWSER__': 'true',
-				'process.browser': 'true',
-				'__SSR__': 'false',
-			}),
-			require('@rollup/plugin-node-resolve').default({
-				browser: true,
-				...options.resolve,
-				rootDir: src
-			}),
-			require('@rollup/plugin-json')({
-				compact: isProd,
-				...options.json
-			}),
-			// for CLIENT runtime
-			require('rollup-route-manifest')({
-				merge: true,
-				inline: true,
-				headers: false,
-				filename: false,
-				routes(file: string) {
-					if (file === entries.dom) return '*';
-					for (let i=0; i < routes.length; i++) {
-						if (routes[i].file === file) return routes[i].pattern;
-					}
-				},
-				format(files: Asset[]) {
-					return files.map(x => x.href);
-				}
-			}),
-			require('@rollup/plugin-commonjs')(options.commonjs),
+			// require('@rollup/plugin-alias')(options.alias),
+			// // Assets.Plugin,
+			// require('@rollup/plugin-replace')({
+			// 	...options.replace,
+			// 	'__BROWSER__': 'true',
+			// 	'process.browser': 'true',
+			// 	'__SSR__': 'false',
+			// }),
+			// require('@rollup/plugin-node-resolve').default({
+			// 	browser: true,
+			// 	...options.resolve,
+			// 	rootDir: src
+			// }),
+			// require('@rollup/plugin-json')({
+			// 	compact: isProd,
+			// 	...options.json
+			// }),
+			// // for CLIENT runtime
+			// require('rollup-route-manifest')({
+			// 	merge: true,
+			// 	inline: true,
+			// 	headers: false,
+			// 	filename: false,
+			// 	routes(file: string) {
+			// 		if (file === entries.dom) return '*';
+			// 		for (let i=0; i < routes.length; i++) {
+			// 			if (routes[i].file === file) return routes[i].pattern;
+			// 		}
+			// 	},
+			// 	format(files: Asset[]) {
+			// 		return files.map(x => x.href);
+			// 	}
+			// }),
+			// require('@rollup/plugin-commonjs')(options.commonjs),
 		]
 	};
 }
@@ -240,24 +240,24 @@ export function Server(argv: Required<Argv>, routes: Build.Route[], entries: Bui
 			Plugin.HTTP,
 			Plugin.Template(template),
 			Plugin.Runtime(src, routes, errors, false),
-			require('@rollup/plugin-alias')(options.alias),
-			// Assets.Plugin,
-			require('@rollup/plugin-replace')({
-				...options.replace,
-				'__BROWSER__': 'false',
-				'process.browser': 'false',
-				'__SSR__': 'true',
-			}),
-			require('@rollup/plugin-node-resolve').default({
-				browser: false,
-				...options.resolve,
-				rootDir: src,
-			}),
-			require('@rollup/plugin-json')({
-				compact: isProd,
-				...options.json
-			}),
-			require('@rollup/plugin-commonjs')(options.commonjs),
+			// require('@rollup/plugin-alias')(options.alias),
+			// // Assets.Plugin,
+			// require('@rollup/plugin-replace')({
+			// 	...options.replace,
+			// 	'__BROWSER__': 'false',
+			// 	'process.browser': 'false',
+			// 	'__SSR__': 'true',
+			// }),
+			// require('@rollup/plugin-node-resolve').default({
+			// 	browser: false,
+			// 	...options.resolve,
+			// 	rootDir: src,
+			// }),
+			// require('@rollup/plugin-json')({
+			// 	compact: isProd,
+			// 	...options.json
+			// }),
+			// require('@rollup/plugin-commonjs')(options.commonjs),
 		]
 	};
 }

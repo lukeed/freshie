@@ -40,6 +40,7 @@ function make(file: string, format: ModuleFormat): OutputOptions {
 	};
 }
 
+// Rollup Plugin
 const plugin: Plugin = {
 	name: 'esbuild',
 	resolveId(file, importer) {
@@ -100,11 +101,11 @@ export async function foobar(modname: string, inputs: Mapping) {
 		...builtinModules,
 		...Object.keys(pkg.dependencies||{}),
 		...Object.keys(pkg.peerDependencies||{}),
-		'@rollup/plugin-alias', // tmp
-		'@rollup/plugin-replace',
-		'@rollup/plugin-node-resolve',
-		'@rollup/plugin-commonjs',
-		'@rollup/plugin-json',
+		// '@rollup/plugin-alias', // tmp
+		// '@rollup/plugin-replace',
+		// '@rollup/plugin-node-resolve',
+		// '@rollup/plugin-commonjs',
+		// '@rollup/plugin-json',
 	];
 
 	let encoder = new TextEncoder;
