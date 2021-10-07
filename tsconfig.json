@@ -19,7 +19,8 @@
     "checkJs": false,
     "noEmit": true,
     "paths": {
-      "freshie": ["./packages/freshie/index.d.ts"]
+      "freshie": ["./packages/freshie/index.d.ts"],
+      "freshie/*": ["./packages/freshie/*/index.d.ts"]
     }
   },
   "include": [

@@ -1,3 +1,1 @@
-declare module 'freshie/http' {
-	export * from 'httpie';
-}
+export * from 'httpie';
