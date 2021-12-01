@@ -12,12 +12,12 @@
     "node": ">=14"
   },
   "devDependencies": {
-    "@types/node": "16.10.2",
-    "esbuild": "^0.13.3",
+    "@types/node": "16.11.11",
+    "esbuild": "^0.14.0",
     "kleur": "4.1.4",
     "rollup": "2.58.0",
     "terser": "5.9.0",
-    "tsm": "2.1.0",
+    "tsm": "2.2.1",
     "typescript": "4.4.3",
     "uvu": "0.5.1"
   }
