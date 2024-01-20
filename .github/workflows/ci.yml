@@ -8,15 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nodejs: [10, 12]
+        nodejs: [10, 14, 18]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.nodejs }}
-
-    - name: (env) pnpm
-      run: curl -L https://raw.githubusercontent.com/pnpm/self-installer/master/install.js | node
+    - uses: pnpm/action-setup@v2.2.4
+      with:
+        version: 5
+        run_install: false
 
     - name: (env) cache
       uses: actions/cache@master
@@ -27,17 +28,22 @@ jobs:
         key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
     - name: Install
-      run: |
-        pnpm install
-        pnpm install -g nyc
+      run: pnpm install
+
+    - name: Test
+      if: matrix.nodejs < 18
+      run: pnpm test
 
     - name: Test w/ Coverage
-      run: nyc --include=packages pnpm test
+      if: matrix.nodejs >= 18
+      run: |
+        pnpm add -g c8
+        c8 --include=packages pnpm test
 
     # - name: Report
-    #   if: matrix.nodejs >= 12
+    #   if: matrix.nodejs >= 18
     #   run: |
-    #     nyc report --reporter=text-lcov > coverage.lcov
+    #     c8 report --reporter=text-lcov > coverage.lcov
     #     bash <(curl -s https://codecov.io/bash)
     #   env:
     #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
