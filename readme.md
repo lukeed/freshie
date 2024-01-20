@@ -1,4 +1,4 @@
-# freshie [![CI](https://github.com/lukeed/freshie/workflows/CI/badge.svg)](https://github.com/lukeed/freshie/actions)
+# freshie [![CI](https://github.com/lukeed/freshie/workflows/CI/badge.svg)](https://github.com/lukeed/freshie/actions) [![licenses](https://licenses.dev/b/npm/freshie)](https://licenses.dev/npm/freshie)
 
 > A fresh take on building universal applications with support for pluggable frontends and backends.
 
