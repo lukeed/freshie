@@ -8,15 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nodejs: [14, 16]
+        nodejs: [14, 16, 18]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.nodejs }}
-
-    - name: (env) pnpm
-      run: curl -L https://pnpm.js.org/pnpm.js | node - add --global pnpm
+    - uses: pnpm/action-setup@v2.2.4
+      with:
+        version: 5
+        run_install: false
 
     - name: (env) cache
       uses: actions/cache@v2
@@ -35,17 +36,17 @@ jobs:
       run: pnpm run build
 
     - name: Tests
-      if: matrix.nodejs < 16
+      if: matrix.nodejs < 18
       run: pnpm run test
 
     - name: Tests w/ Coverage
-      if: matrix.nodejs >= 16
+      if: matrix.nodejs >= 18
       run: |
         pnpm add -g c8
         c8 --include=packages pnpm test
 
     - name: Report Coverage
-      if: matrix.nodejs >= 16
+      if: matrix.nodejs >= 18
       run: |
         c8 report --reporter=text-lcov > coverage.lcov
         bash <(curl -s https://codecov.io/bash)
